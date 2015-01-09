@@ -1,7 +1,10 @@
 package de.jbossi.geolarm;
 
+import android.content.Context;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.location.*;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -11,6 +14,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private LocationManager mlocationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +64,30 @@ public class MapsActivity extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        mlocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        mMap.addMarker(new MarkerOptions().position(getLastBestLocation()).title("Standort"));
+
+    }
+
+    private LatLng getLastBestLocation() {
+        Location locationGPS = mlocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location locationNet = mlocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+        long GPSLocationTime = 0;
+        if (null != locationGPS) { GPSLocationTime = locationGPS.getTime(); }
+
+        long NetLocationTime = 0;
+
+        if (null != locationNet) {
+            NetLocationTime = locationNet.getTime();
+        }
+
+        if ( 0 < GPSLocationTime - NetLocationTime ) {
+            return new LatLng(locationGPS.getLatitude(), locationGPS.getLongitude());
+        }
+        else {
+            return new LatLng(locationNet.getLatitude(), locationNet.getLongitude());
+        }
     }
 }
