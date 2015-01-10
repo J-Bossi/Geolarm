@@ -11,12 +11,15 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends Activity implements OnMapReadyCallback {
 
     private MapFragment mMap; // Might be null if Google Play services APK is not available.
     private LocationManager mlocationManager;
+    private Marker mAlarmMarker;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,16 +37,35 @@ public class MapsActivity extends Activity implements OnMapReadyCallback {
     }
 
 
-
     public void onMapReady(GoogleMap map) {
 
         map.setMyLocationEnabled(true);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(getLastBestLocation(), 13));
+        map.setOnMapLongClickListener(onMapLongClickListener);
 
-        map.addMarker(new MarkerOptions()
-                .title("Standort")
-                .snippet("Hier halten Sie sich gerade auf")
-                .position(getLastBestLocation()));
+
+    }
+
+    private GoogleMap.OnMapLongClickListener onMapLongClickListener = new GoogleMap.OnMapLongClickListener() {
+        @Override
+        public void onMapLongClick(LatLng latLng) {
+            if (mAlarmMarker == null) {
+                MarkerOptions alarmMarkerOptions = new MarkerOptions().title("Standort")
+                        .snippet("Hier halten Sie sich gerade auf")
+                        .position(latLng);
+                mAlarmMarker = mMap.getMap().addMarker(alarmMarkerOptions);
+
+
+                ;
+            } else {
+                mAlarmMarker.setPosition(latLng);
+
+            }
+        }
+    };
+
+    protected void onMapLongClick(LatLng clickPosition) {
+
     }
 
     private LatLng getLastBestLocation() {
@@ -51,7 +73,9 @@ public class MapsActivity extends Activity implements OnMapReadyCallback {
         Location locationNet = mlocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
         long GPSLocationTime = 0;
-        if (null != locationGPS) { GPSLocationTime = locationGPS.getTime(); }
+        if (null != locationGPS) {
+            GPSLocationTime = locationGPS.getTime();
+        }
 
         long NetLocationTime = 0;
 
@@ -59,10 +83,9 @@ public class MapsActivity extends Activity implements OnMapReadyCallback {
             NetLocationTime = locationNet.getTime();
         }
 
-        if ( 0 < GPSLocationTime - NetLocationTime ) {
+        if (0 < GPSLocationTime - NetLocationTime) {
             return new LatLng(locationGPS.getLatitude(), locationGPS.getLongitude());
-        }
-        else {
+        } else {
             return new LatLng(locationNet.getLatitude(), locationNet.getLongitude());
         }
     }
