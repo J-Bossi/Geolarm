@@ -1,10 +1,12 @@
 package de.jbossi.geolarm;
 
-import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -14,7 +16,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends Activity implements OnMapReadyCallback {
+public class MapsActivity extends ActionBarActivity implements OnMapReadyCallback {
 
     private MapFragment mMap; // Might be null if Google Play services APK is not available.
     private LocationManager mlocationManager;
@@ -36,12 +38,20 @@ public class MapsActivity extends Activity implements OnMapReadyCallback {
 
     }
 
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.maps_activity_actions, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
 
     public void onMapReady(GoogleMap map) {
 
         map.setMyLocationEnabled(true);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(getLastBestLocation(), 13));
         map.setOnMapLongClickListener(onMapLongClickListener);
+        map.getUiSettings().setMapToolbarEnabled(false);
 
 
     }

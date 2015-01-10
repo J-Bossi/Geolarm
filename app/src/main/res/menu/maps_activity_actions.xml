@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:geolarm="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/action_search"
+        android:icon="@drawable/ic_add_alarm"
+        android:title="Alarm hinzufügen"
+        geolarm:showAsAction="always" />
+    <item android:id="@+id/action_settings"
+        android:title="Einstellungen"
+        geolarm:showAsAction="never" />
+</menu>
