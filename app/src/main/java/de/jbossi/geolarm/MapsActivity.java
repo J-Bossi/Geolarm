@@ -4,9 +4,13 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
+import android.view.Window;
+import android.widget.ImageButton;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,16 +25,26 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
     private MapFragment mMap; // Might be null if Google Play services APK is not available.
     private LocationManager mlocationManager;
     private Marker mAlarmMarker;
+    private ImageButton mFloatingActionButton;
 
 
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         mlocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mMap = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mMap.getMapAsync(this);
+        mFloatingActionButton = (ImageButton) findViewById(R.id.floatingActionButton);
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSetAlarmDialog();
+            }
+        });
     }
+
 
     @Override
     protected void onResume() {
@@ -74,8 +88,10 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
         }
     };
 
-    protected void onMapLongClick(LatLng clickPosition) {
+    public void showSetAlarmDialog() {
 
+        DialogFragment dialog = new SetAlarmFragment();
+        dialog.show(getSupportFragmentManager(), "SetAlarmFragment");
     }
 
     private LatLng getLastBestLocation() {
@@ -99,4 +115,5 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
             return new LatLng(locationNet.getLatitude(), locationNet.getLongitude());
         }
     }
+
 }
