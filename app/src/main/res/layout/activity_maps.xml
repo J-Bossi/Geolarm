@@ -4,4 +4,17 @@
     android:name="com.google.android.gms.maps.MapFragment"
     tools:layout="@layout/activity_maps" >
 
-    </fragment>
+    <ImageButton
+        android:id="@+id/floatingActionButton"
+
+        android:layout_width="@dimen/floatingActionButton_size"
+        android:layout_height="@dimen/floatingActionButton_size"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/ripple"
+        android:stateListAnimator="@anim/animation"
+        android:src="@drawable/ic_add_alarm"
+        android:elevation="4dp" />
+
+</fragment>

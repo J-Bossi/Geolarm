@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="floatingActionButton_size">56dp</dimen>
+    <dimen name="button_elevation">1dp</dimen>
+    <dimen name="button_press_elevation">4dp</dimen>
+</resources>
