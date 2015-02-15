@@ -1,12 +1,14 @@
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:id="@+id/map" tools:context=".MapsActivity"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/map"
+    tools:context=".MapsActivity"
     android:name="com.google.android.gms.maps.MapFragment"
-    tools:layout="@layout/activity_maps" >
+    tools:layout="@layout/activity_maps">
 
     <ImageButton
         android:id="@+id/floatingActionButton"
-
         android:layout_width="@dimen/floatingActionButton_size"
         android:layout_height="@dimen/floatingActionButton_size"
         android:layout_gravity="bottom|right"

@@ -1,10 +1,13 @@
 package de.jbossi.geolarm;
 
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,6 +15,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -19,6 +23,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.Calendar;
 
 public class MapsActivity extends ActionBarActivity implements OnMapReadyCallback {
 
@@ -43,6 +49,14 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
                 showSetAlarmDialog();
             }
         });
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.SECOND, 5);
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                12345, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager am =
+                (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
+        am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
     }
 
 
@@ -90,8 +104,14 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
 
     public void showSetAlarmDialog() {
 
-        DialogFragment dialog = new SetAlarmFragment();
-        dialog.show(getSupportFragmentManager(), "SetAlarmFragment");
+        new MaterialDialog.Builder(this)
+                .title("Alarm wählen")
+                .customView(R.layout.set_alarm_dialog, true).accentColor(R.color.primary)
+                .positiveText("Ok").negativeText("Abbrechen")
+                .positiveColor(R.color.primary_dark)
+                .build()
+                .show();
+
     }
 
     private LatLng getLastBestLocation() {

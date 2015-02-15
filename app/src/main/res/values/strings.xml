@@ -3,8 +3,7 @@
 
     <string name="app_name">Geolarm</string>
     <string name="title_activity_maps">Map</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="set_new_alarm">Neuen Wecker stellen</string>
+    <string name="choose_alarm_distance">Entfernung beträgt 1 km</string>
     <string name="ok">Ok</string>
     <string name="cancel">Abbrechen</string>
 
