@@ -6,5 +6,6 @@
     <string name="choose_alarm_distance">Entfernung beträgt 1 km</string>
     <string name="ok">Ok</string>
     <string name="cancel">Abbrechen</string>
+    <string name="newAlarm">Neuer Alarm</string>
 
 </resources>

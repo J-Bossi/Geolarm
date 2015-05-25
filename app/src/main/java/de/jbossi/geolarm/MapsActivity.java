@@ -1,21 +1,23 @@
 package de.jbossi.geolarm;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -24,7 +26,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.Calendar;
 
 public class MapsActivity extends ActionBarActivity implements OnMapReadyCallback {
 
@@ -32,6 +33,7 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
     private LocationManager mlocationManager;
     private Marker mAlarmMarker;
     private ImageButton mFloatingActionButton;
+    private EditText editLocation;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,14 +51,14 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
                 showSetAlarmDialog();
             }
         });
-        Calendar cal = Calendar.getInstance();
+/*        Calendar cal = Calendar.getInstance();
         cal.add(Calendar.SECOND, 5);
         Intent intent = new Intent(this, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 12345, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager am =
                 (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
-        am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+        am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);*/
     }
 
 
@@ -99,20 +101,63 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
                 mAlarmMarker.setPosition(latLng);
 
             }
+            onPickButtonClick(getCurrentFocus());
         }
     };
 
     public void showSetAlarmDialog() {
 
-        new MaterialDialog.Builder(this)
-                .title("Alarm wählen")
-                .customView(R.layout.set_alarm_dialog, true).accentColor(R.color.primary)
-                .positiveText("Ok").negativeText("Abbrechen")
+        MaterialDialog setUpDialog = new MaterialDialog.Builder(this).title("Alarm wählen!")
+                .customView(R.layout.set_alarm_dialog, true)
                 .positiveColor(R.color.primary_dark)
-                .build()
-                .show();
+                .build();
 
+        editLocation = (EditText) setUpDialog.getCustomView().findViewById(R.id.locationText);
+        editLocation.setText(mAlarmMarker.getTitle());
+        setUpDialog.show();
     }
+
+    public void onPickButtonClick(View v) {
+        // Construct an intent for the place picker
+        try {
+            PlacePicker.IntentBuilder intentBuilder =
+                    new PlacePicker.IntentBuilder();
+            Intent intent = intentBuilder.build(this);
+            // Start the intent by requesting a result,
+            // identified by a request code.
+            startActivityForResult(intent, REQUEST_PLACE_PICKER);
+
+        } catch (GooglePlayServicesRepairableException e) {
+            // ...
+        } catch (GooglePlayServicesNotAvailableException e) {
+            // ...
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode,
+                                    int resultCode, Intent data) {
+
+        if (requestCode == REQUEST_PLACE_PICKER
+                && resultCode == Activity.RESULT_OK) {
+
+            // The user has selected a place. Extract the name and address.
+            final Place place = PlacePicker.getPlace(data, this);
+
+            final CharSequence name = place.getName();
+
+            editLocation.setText(name);
+
+
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+
+
+
+
 
     private LatLng getLastBestLocation() {
         Location locationGPS = mlocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
