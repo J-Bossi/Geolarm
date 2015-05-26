@@ -56,6 +56,7 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
     protected static final String TAG = "main-activity";
     private GoogleApiClient mGoogleApiClient;
 
+
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
@@ -74,7 +75,8 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
         distance = 100;
         // Kick off the request to build GoogleApiClient.
         buildGoogleApiClient();
-        mAlarmList = new ArrayList<Alarm>();
+        mAlarmList = new ArrayList<>();
+        mGeofenceList = new ArrayList<>();
     }
 
     /**
@@ -166,7 +168,8 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
                     public void onPositive(MaterialDialog dialog) {
 
                         mAlarmList.add(new Alarm(place, distance));
-
+                        Log.i(TAG, "Following place was set to the alarm List " + place.getName());
+                        populateGeofenceList();
                     }
 
                     @Override
@@ -264,6 +267,7 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
                     .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
                             Geofence.GEOFENCE_TRANSITION_EXIT)
                     .build());
+            Log.i(TAG, "new geofence " + alarm.getmPlace().getName());
         }
         LocationServices.GeofencingApi.addGeofences(
                 mGoogleApiClient,

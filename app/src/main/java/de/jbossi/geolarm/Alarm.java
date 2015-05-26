@@ -9,11 +9,13 @@ public class Alarm {
     private Place mPlace;
     private float mDistance;
 
+
     public Place getmPlace() {
         return mPlace;
     }
 
     public void setmPlace(Place mPlace) {
+
         this.mPlace = mPlace;
     }
 
@@ -22,6 +24,7 @@ public class Alarm {
     }
 
     public void setmDistance(float mDistance) {
+
         this.mDistance = mDistance;
     }
 
@@ -29,4 +32,6 @@ public class Alarm {
         this.mPlace = mPlace;
         this.mDistance = mDistance;
     }
+
+
 }

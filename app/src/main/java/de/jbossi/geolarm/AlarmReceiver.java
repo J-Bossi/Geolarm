@@ -1,26 +1,36 @@
 package de.jbossi.geolarm;
 
-import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.view.View;
+import android.widget.Button;
 
 import java.io.IOException;
 
-public class AlarmReceiver extends Activity {
+public class AlarmReceiver extends FragmentActivity {
 
 
     private MediaPlayer mMediaPlayer;
+    private Button mShutdownAlarmButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         playSound(this, getAlarmUri());
+
+        setContentView(R.layout.activity_alarm);
+        mShutdownAlarmButton = (Button) findViewById(R.id.shutdownAlarmButton);
+        mShutdownAlarmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shutdownAlarm();
+            }
+        });
     }
 
     private void playSound(Context context, Uri alert) {
@@ -37,6 +47,10 @@ public class AlarmReceiver extends Activity {
         } catch (IOException e) {
             System.out.println("OOPS");
         }
+    }
+
+    private void shutdownAlarm() {
+        mMediaPlayer.stop();
     }
 
     //Get an alarm sound. Try for an alarm. If none set, try notification,
