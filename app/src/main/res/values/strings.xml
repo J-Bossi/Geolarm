@@ -7,5 +7,12 @@
     <string name="ok">Ok</string>
     <string name="cancel">Abbrechen</string>
     <string name="newAlarm">Neuer Alarm</string>
+    <string name="geofence_not_available">Geofence not available</string>
+    <string name="geofence_too_many_geofences">Geofence too many geofences</string>
+    <string name="geofence_too_many_pending_intents">Geofence too many pending intents</string>
+    <string name="unknown_geofence_error">Unknown error</string>
+    <string name="geofence_transition_entered">Geofence transition entered</string>
+    <string name="geofence_transition_exited">Geofence tranistion exited</string>
+    <string name="unknown_geofence_transition">unknown geofence transition</string>
 
 </resources>

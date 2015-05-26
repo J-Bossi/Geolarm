@@ -1,7 +1,6 @@
 package de.jbossi.geolarm;
 
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +8,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -21,6 +21,12 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -31,10 +37,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class MapsActivity extends ActionBarActivity implements OnMapReadyCallback {
+public class MapsActivity extends ActionBarActivity implements OnMapReadyCallback, ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks {
 
     private MapFragment mMap; // Might be null if Google Play services APK is not available.
     private LocationManager mlocationManager;
@@ -42,8 +49,12 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
     private ImageButton mFloatingActionButton;
     private EditText editLocation;
     private Place place;
+    private float distance;
     int REQUEST_PLACE_PICKER = 1;
-
+    private List<Geofence> mGeofenceList;
+    private List<Alarm> mAlarmList;
+    protected static final String TAG = "main-activity";
+    private GoogleApiClient mGoogleApiClient;
 
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -60,9 +71,47 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
                 showSetAlarmDialog();
             }
         });
-
+        distance = 100;
+        // Kick off the request to build GoogleApiClient.
+        buildGoogleApiClient();
+        mAlarmList = new ArrayList<Alarm>();
     }
 
+    /**
+     * Builds a GoogleApiClient. Uses the {@code #addApi} method to request the LocationServices API.
+     */
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mGoogleApiClient.disconnect();
+    }
+
+    /**
+     * Runs when a GoogleApiClient object successfully connects.
+     */
+
+    public void onConnected(Bundle connectionHint) {
+        Log.i(TAG, "Connected to GoogleApiClient");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.i(TAG, "on conncetionsuspended callback???");
+    }
 
     @Override
     protected void onResume() {
@@ -115,13 +164,9 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
                 .positiveColor(R.color.primary_dark).callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        Calendar cal = Calendar.getInstance();
-                        cal.add(Calendar.SECOND, 5);
-                        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
-                        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
-                                12345, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-                        AlarmManager am = (AlarmManager) getApplicationContext().getSystemService(Activity.ALARM_SERVICE);
-                        am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+
+                        mAlarmList.add(new Alarm(place, distance));
+
                     }
 
                     @Override
@@ -169,9 +214,6 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
 
             // The user has selected a place. Extract the name and address.
             place = PlacePicker.getPlace(data, this);
-
-
-
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -205,4 +247,50 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
         }
     }
 
+    private void populateGeofenceList() {
+        for (Alarm alarm : mAlarmList) {
+
+            mGeofenceList.add(new Geofence.Builder()
+                    // Set the request ID of the geofence. This is a string to identify this
+                    // geofence.
+                    .setRequestId(alarm.getmPlace().getId())
+
+                    .setCircularRegion(
+                            alarm.getmPlace().getLatLng().latitude,
+                            alarm.getmPlace().getLatLng().longitude,
+                            alarm.getmDistance()//Distance in meters
+                    )
+                    .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                            Geofence.GEOFENCE_TRANSITION_EXIT)
+                    .build());
+        }
+        LocationServices.GeofencingApi.addGeofences(
+                mGoogleApiClient,
+                getGeofencingRequest(),
+                getGeofencePendingIntent()
+        ).setResultCallback(this);
+    }
+
+    private GeofencingRequest getGeofencingRequest() {
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.addGeofences(mGeofenceList);
+        return builder.build();
+    }
+
+    private PendingIntent getGeofencePendingIntent() {
+        // Reuse the PendingIntent if we already have it.
+
+        Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
+        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
+        // calling addGeofences() and removeGeofences().
+        return PendingIntent.getService(this, 0, intent, PendingIntent.
+                FLAG_UPDATE_CURRENT);
+    }
+
+    @Override
+    public void onResult(Status status) {
+        Log.i(TAG, "I have to to somethong with the onResult method " + status.getStatusMessage());
+    }
 }
