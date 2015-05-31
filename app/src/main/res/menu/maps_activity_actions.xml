@@ -3,9 +3,10 @@
     xmlns:geolarm="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/action_search"
         android:icon="@drawable/ic_add_alarm"
-        android:title="Alarm hinzufügen"
+        android:title="@string/add_alarm"
+
         geolarm:showAsAction="always" />
     <item android:id="@+id/action_settings"
-        android:title="Einstellungen"
+        android:title="@string/settings"
         geolarm:showAsAction="never" />
 </menu>

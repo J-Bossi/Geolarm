@@ -4,7 +4,7 @@
     <string name="app_name">Geolarm</string>
     <string name="title_activity_maps">Map</string>
     <string name="choose_alarm_distance">Entfernung beträgt 1 km</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="cancel">Abbrechen</string>
     <string name="newAlarm">Neuer Alarm</string>
     <string name="geofence_not_available">Geofence not available</string>
@@ -14,5 +14,8 @@
     <string name="geofence_transition_entered">Geofence transition entered</string>
     <string name="geofence_transition_exited">Geofence tranistion exited</string>
     <string name="unknown_geofence_transition">unknown geofence transition</string>
+    <string name="add_alarm">Alarm hinzufügen</string>
+    <string name="settings">Einstellungen</string>
+    <string name="shutdown_alarm">Alarm ausschalten</string>
 
 </resources>
