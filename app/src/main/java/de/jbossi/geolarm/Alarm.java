@@ -10,20 +10,20 @@ public class Alarm {
     private float mDistance;
 
 
-    public Place getmPlace() {
+    public Place getPlace() {
         return mPlace;
     }
 
-    public void setmPlace(Place mPlace) {
+    public void setPlace(Place mPlace) {
 
         this.mPlace = mPlace;
     }
 
-    public float getmDistance() {
+    public float getDistance() {
         return mDistance;
     }
 
-    public void setmDistance(float mDistance) {
+    public void setDistance(float mDistance) {
 
         this.mDistance = mDistance;
     }

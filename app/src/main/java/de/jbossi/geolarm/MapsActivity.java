@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MapsActivity extends ActionBarActivity implements OnMapReadyCallback, ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks {
 
     private MapFragment mMap; // Might be null if Google Play services APK is not available.
     private LocationManager mlocationManager;
@@ -58,7 +58,7 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
 
 
     protected void onCreate(Bundle savedInstanceState) {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         mlocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -180,9 +180,7 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
 
 
         editLocation = (EditText) setUpDialog.getCustomView().findViewById(R.id.locationText);
-        if (place != null) {
-            editLocation.setText(place.getName());
-        }
+        if (place != null) editLocation.setText(place.getName());
         setUpDialog.show();
     }
 
@@ -256,18 +254,18 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
             mGeofenceList.add(new Geofence.Builder()
                     // Set the request ID of the geofence. This is a string to identify this
                     // geofence.
-                    .setRequestId(alarm.getmPlace().getId())
+                    .setRequestId(alarm.getPlace().getId())
 
                     .setCircularRegion(
-                            alarm.getmPlace().getLatLng().latitude,
-                            alarm.getmPlace().getLatLng().longitude,
-                            alarm.getmDistance()//Distance in meters
+                            alarm.getPlace().getLatLng().latitude,
+                            alarm.getPlace().getLatLng().longitude,
+                            alarm.getDistance()//Distance in meters
                     )
                     .setExpirationDuration(Geofence.NEVER_EXPIRE)
                     .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
                             Geofence.GEOFENCE_TRANSITION_EXIT)
                     .build());
-            Log.i(TAG, "new geofence " + alarm.getmPlace().getName());
+            Log.i(TAG, "new geofence " + alarm.getPlace().getName());
         }
         LocationServices.GeofencingApi.addGeofences(
                 mGoogleApiClient,

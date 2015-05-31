@@ -4,17 +4,13 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 /**
  * Listener for geofence transition changes.
@@ -65,28 +61,17 @@ public class GeofenceTransitionsIntentService extends IntentService {
                 geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
 
             // Get the geofences that were triggered. A single event can trigger multiple geofences.
-            List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
+            //    List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
 
-            // Get the transition details as a String.
-            String geofenceTransitionDetails = getGeofenceTransitionDetails(
-                    this,
-                    geofenceTransition,
-                    triggeringGeofences
-            );
-
-            // Send notification and log the transition details.
-            //     sendNotification(geofenceTransitionDetails);
-
-            //Send Alarm and log the transition details
-            sendAlarm(geofenceTransitionDetails);
-            Log.i(TAG, geofenceTransitionDetails);
+            sendAlarm();
+            Log.i(TAG, "blubbb");
         } else {
             // Log the error.
-            Log.e(TAG, "Transition Type invalid: " + geofenceTransition);
+            Log.e(TAG, "Transition Type invalid: ");
         }
     }
 
-    private void sendAlarm(String geofenceTransitionDetails) {
+    private void sendAlarm() {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.SECOND, 2);
         Intent intent = new Intent(this, AlarmReceiver.class);
@@ -105,22 +90,6 @@ public class GeofenceTransitionsIntentService extends IntentService {
      * @param triggeringGeofences The geofence(s) triggered.
      * @return The transition details formatted as String.
      */
-    private String getGeofenceTransitionDetails(
-            Context context,
-            int geofenceTransition,
-            List<Geofence> triggeringGeofences) {
-
-        String geofenceTransitionString = getTransitionString(geofenceTransition);
-
-        // Get the Ids of each geofence that was triggered.
-        ArrayList triggeringGeofencesIdsList = new ArrayList();
-        for (Geofence geofence : triggeringGeofences) {
-            triggeringGeofencesIdsList.add(geofence.getRequestId());
-        }
-        String triggeringGeofencesIdsString = TextUtils.join(", ", triggeringGeofencesIdsList);
-
-        return geofenceTransitionString + ": " + triggeringGeofencesIdsString;
-    }
 
     /**
      * Posts a notification in the notification bar when a transition is detected.
@@ -174,7 +143,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
      * @param transitionType A transition type constant defined in Geofence
      * @return A String indicating the type of transition
      */
-    private String getTransitionString(int transitionType) {
+/*    private String getTransitionString(int transitionType) {
         switch (transitionType) {
             case Geofence.GEOFENCE_TRANSITION_ENTER:
                 return getString(R.string.geofence_transition_entered);
@@ -183,5 +152,5 @@ public class GeofenceTransitionsIntentService extends IntentService {
             default:
                 return getString(R.string.unknown_geofence_transition);
         }
-    }
+    }*/
 }
