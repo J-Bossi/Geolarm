@@ -4,4 +4,4 @@ This is the Repo for an Android-App. It is location-based Alarm that notifies yo
 ## Current status
 This is currently an early development status.
 
-![TravisCI](https://travis-ci.org/J-Bossi/Geolarm.svg?branch=master)
+[![TravisCI](https://travis-ci.org/J-Bossi/Geolarm.svg?branch=master)](https://travis-ci.org/J-Bossi/Geolarm)

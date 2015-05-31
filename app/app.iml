@@ -95,6 +95,7 @@
     <orderEntry type="library" exported="" name="play-services-panorama-7.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-appindexing-7.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-cast-7.3.0" level="project" />
+    <orderEntry type="library" exported="" name="robotium-solo-5.2.1" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-22.1.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-location-7.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-ads-7.3.0" level="project" />
