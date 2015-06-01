@@ -1,4 +1,8 @@
 language: android
+# Turn off caching to avoid any caching problems
+cache: false
+# Use the Travis Container-Based Infrastructure (see #203)
+sudo: false
 env:
   global:
     - ANDROID_API_LEVEL=21
@@ -37,4 +41,4 @@ before_script:
   - adb shell input keyevent 82 &
 
 script:
-    - ./gradlew build connectedCheck --stacktrace
+    - ./gradlew build connectedCheck --stacktrace -PdisablePreDex
