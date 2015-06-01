@@ -15,7 +15,7 @@ import com.robotium.solo.Solo;
 
 public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
     private Solo solo;
-    private LocationManager locationManager;
+
     private Activity activityUnderTest;
     private MockLocationProvider mock;
     private static final String TAG = "Maps_Activity_Test";
@@ -28,10 +28,6 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
 
     protected void tearDown() throws Exception {
 
-
-        locationManager.removeTestProvider(LocationManager.GPS_PROVIDER);
-        locationManager.removeTestProvider(LocationManager.NETWORK_PROVIDER);
-        locationManager = null;
         solo.finishOpenedActivities();
         mock.shutdown();
         activityUnderTest = null;
@@ -43,7 +39,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
     public void setUp() throws Exception {
         super.setUp();
 
-        mock = new MockLocationProvider("locationTestProvider2", getActivity());
+        mock = new MockLocationProvider("locationTestProvider11", getActivity());
         Log.i(TAG, "Setup MOCK Location Providers");
         //Set test location
         mock.pushLocation(-12.34, 23.45, 1.0f);
@@ -85,6 +81,8 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
         solo.waitForActivity("MapsActivity");
         Log.i(TAG, "Has Activity");
         solo.clickOnImageButton(0);
+        assertTrue(solo.waitForDialogToOpen());
+
 
     }
 }
