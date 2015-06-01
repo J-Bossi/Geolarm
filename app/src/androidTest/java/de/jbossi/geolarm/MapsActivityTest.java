@@ -1,6 +1,7 @@
 package de.jbossi.geolarm;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -14,7 +15,8 @@ import com.robotium.solo.Solo;
 
 public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
     private Solo solo;
-
+    private LocationManager locationManager;
+    private Activity activityUnderTest;
     private MockLocationProvider mock;
     private static final String TAG = "Maps_Activity_Test";
 
@@ -22,6 +24,21 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
     public MapsActivityTest() throws ClassNotFoundException {
         super(MapsActivity.class);
     }
+
+
+    protected void tearDown() throws Exception {
+
+
+        locationManager.removeTestProvider(LocationManager.GPS_PROVIDER);
+        locationManager.removeTestProvider(LocationManager.NETWORK_PROVIDER);
+        locationManager = null;
+        solo.finishOpenedActivities();
+        mock.shutdown();
+        activityUnderTest = null;
+        Log.i(TAG, "Finish Test");
+        super.tearDown();
+    }
+
 
     public void setUp() throws Exception {
         super.setUp();
@@ -61,12 +78,6 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
         getActivity();
     }
 
-    @Override
-    public void tearDown() throws Exception {
-        solo.finishOpenedActivities();
-        super.tearDown();
-        mock.shutdown();
-    }
 
     public void testRun() {
         //Wait for activity: 'com.example.ExampleActivty'

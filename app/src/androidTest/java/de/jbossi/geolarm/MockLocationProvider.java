@@ -15,15 +15,15 @@ public class MockLocationProvider {
 
         LocationManager lm = (LocationManager) ctx.getSystemService(
                 Context.LOCATION_SERVICE);
-        try {
-            lm.removeTestProvider(name);
-        } finally {
+
+        //lm.removeTestProvider(name);
+
 
 
             lm.addTestProvider(providerName, false, false, false, false, false,
                     true, true, 0, 5);
             lm.setTestProviderEnabled(providerName, true);
-        }
+
     }
 
     public void pushLocation(double lat, double lon, float acc) {
