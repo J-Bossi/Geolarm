@@ -131,11 +131,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void onMapReady(GoogleMap map) {
 
-        map.setMyLocationEnabled(true);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(getLastBestLocation(), 13));
-        map.setOnMapLongClickListener(onMapLongClickListener);
-        map.getUiSettings().setMapToolbarEnabled(false);
-
+        if (getLastBestLocation() != null) {
+            Log.i(TAG, "Startin onMapReady");
+            map.setMyLocationEnabled(true);
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(getLastBestLocation(), 13));
+            map.setOnMapLongClickListener(onMapLongClickListener);
+            map.getUiSettings().setMapToolbarEnabled(false);
+        }
 
     }
 
@@ -231,21 +233,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Location locationNet = mlocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
         long GPSLocationTime = 0;
-        if (null != locationGPS) {
-            GPSLocationTime = locationGPS.getTime();
+        try {
+            if (locationGPS == null & locationNet == null) {
+                throw new Exception();
+            }
+            if (null != locationGPS) {
+                GPSLocationTime = locationGPS.getTime();
+            }
+
+            long NetLocationTime = 0;
+
+            if (null != locationNet) {
+                NetLocationTime = locationNet.getTime();
+            }
+
+            if (0 < GPSLocationTime - NetLocationTime) {
+                return new LatLng(locationGPS.getLatitude(), locationGPS.getLongitude());
+            } else {
+                return new LatLng(locationNet.getLatitude(), locationNet.getLongitude());
+            }
+        } catch (Exception e) {
+            return null;
         }
 
-        long NetLocationTime = 0;
-
-        if (null != locationNet) {
-            NetLocationTime = locationNet.getTime();
-        }
-
-        if (0 < GPSLocationTime - NetLocationTime) {
-            return new LatLng(locationGPS.getLatitude(), locationGPS.getLongitude());
-        } else {
-            return new LatLng(locationNet.getLatitude(), locationNet.getLongitude());
-        }
     }
 
     private void populateGeofenceList() {
