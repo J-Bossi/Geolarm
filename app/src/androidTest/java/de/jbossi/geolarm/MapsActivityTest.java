@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
+import android.widget.ImageButton;
 
 import com.robotium.solo.Solo;
 
@@ -39,7 +40,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
     public void setUp() throws Exception {
         super.setUp();
 
-        mock = new MockLocationProvider("locationTestProvider11", getActivity());
+        mock = new MockLocationProvider("locationTestProvider29", getActivity());
         Log.i(TAG, "Setup MOCK Location Providers");
         //Set test location
         mock.pushLocation(-12.34, 23.45, 1.0f);
@@ -65,22 +66,32 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
 
             }
 
+
         };
 
         locMgr.requestLocationUpdates(
                 LocationManager.NETWORK_PROVIDER, 1000, 1, lis);
         Log.i(TAG, "Requested Location Update");
-        solo = new Solo(getInstrumentation());
-        getActivity();
+        solo = new Solo(getInstrumentation(), getActivity());
+
+        Log.i(TAG, "Wait for activity");
+        solo.waitForActivity("MapsActivity");
+        Log.i(TAG, "Has Activity");
+        //    solo.clickOnImageButton(0);
     }
 
 
     public void testRun() {
-        //Wait for activity: 'com.example.ExampleActivty'
-        Log.i(TAG, "Wait for activity");
-        solo.waitForActivity("MapsActivity");
-        Log.i(TAG, "Has Activity");
-        solo.clickOnImageButton(0);
+        Log.i(TAG, "Run Actual Test");
+        solo.waitForView(ImageButton.class);
+        Log.i(TAG, "Has View Image Button");
+        ImageButton imageButton = (ImageButton) solo.getView(R.id.floatingActionButton);
+        Log.i(TAG, "Attempt to clock on" + imageButton.getTransitionName());
+        solo.clickOnView(imageButton);
+
+        //solo.assertCurrentActivity("act", MapsActivity.class);
+//        solo.clickOnImageButton(0);
+//        Log.i(TAG, "Clicked On imagebuttom");
         assertTrue(solo.waitForDialogToOpen());
 
 
