@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 
 import com.robotium.solo.Solo;
@@ -72,8 +73,15 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
         locMgr.requestLocationUpdates(
                 LocationManager.NETWORK_PROVIDER, 1000, 1, lis);
         Log.i(TAG, "Requested Location Update");
-        solo = new Solo(getInstrumentation(), getActivity());
 
+        getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+            }
+        });
+
+        solo = new Solo(getInstrumentation(), getActivity());
         Log.i(TAG, "Wait for activity");
         solo.waitForActivity("MapsActivity");
         Log.i(TAG, "Has Activity");
