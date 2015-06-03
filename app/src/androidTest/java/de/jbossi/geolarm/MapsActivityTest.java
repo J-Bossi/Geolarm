@@ -96,7 +96,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
         ImageButton imageButton = (ImageButton) solo.getView(R.id.floatingActionButton);
         Log.i(TAG, "Attempt to clock on" + imageButton.getTransitionName());
         solo.clickOnView(imageButton);
-        assertTrue(solo.waitForText("Alarm w‰hlen"));
+        assertTrue(solo.waitForText("Entfernung betr√§gt 1 km"));
 
         //solo.assertCurrentActivity("act", MapsActivity.class);
 //        solo.clickOnImageButton(0);
