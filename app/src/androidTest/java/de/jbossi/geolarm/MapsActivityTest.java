@@ -96,12 +96,11 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
         ImageButton imageButton = (ImageButton) solo.getView(R.id.floatingActionButton);
         Log.i(TAG, "Attempt to clock on" + imageButton.getTransitionName());
         solo.clickOnView(imageButton);
+        assertTrue(solo.waitForText("Alarm wählen"));
 
         //solo.assertCurrentActivity("act", MapsActivity.class);
 //        solo.clickOnImageButton(0);
 //        Log.i(TAG, "Clicked On imagebuttom");
-        assertTrue(solo.waitForDialogToOpen());
-
-
+        //assertTrue(solo.waitForDialogToOpen());
     }
 }
