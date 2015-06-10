@@ -4,6 +4,7 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.SystemClock;
+import android.util.Log;
 
 public class MockLocationProvider {
     String providerName;
@@ -38,6 +39,7 @@ public class MockLocationProvider {
         mockLocation.setTime(System.currentTimeMillis());
         mockLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
         lm.setTestProviderLocation(providerName, mockLocation);
+        Log.i("MockLoc", "new Mock Location");
     }
 
     public void shutdown() {

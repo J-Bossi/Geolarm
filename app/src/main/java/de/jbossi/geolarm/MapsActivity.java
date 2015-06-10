@@ -131,15 +131,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void onMapReady(GoogleMap map) {
 
-        if (getLastBestLocation() != null) {
+
             Log.i(TAG, "Startin onMapReady");
             map.setMyLocationEnabled(true);
+        if (getLastBestLocation() != null) {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(getLastBestLocation(), 13));
+        }
             map.setOnMapLongClickListener(onMapLongClickListener);
             map.getUiSettings().setMapToolbarEnabled(false);
-        }
+
 
     }
+
 
     private GoogleMap.OnMapLongClickListener onMapLongClickListener = new GoogleMap.OnMapLongClickListener() {
         @Override
@@ -170,7 +173,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onPositive(MaterialDialog dialog) {
 
                         mAlarmList.add(new Alarm(place, distance));
-                        Log.i(TAG, "Following place was set to the alarm List " + place.getName());
+
                         populateGeofenceList();
                     }
 
@@ -182,7 +185,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         editLocation = (EditText) setUpDialog.getCustomView().findViewById(R.id.locationText);
-        if (place != null) editLocation.setText(place.getName());
+        if (place != null) {
+            editLocation.setText(place.getName());
+        }
         setUpDialog.show();
     }
 
@@ -231,6 +236,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         Location locationGPS = mlocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         Location locationNet = mlocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
 
         long GPSLocationTime = 0;
         try {

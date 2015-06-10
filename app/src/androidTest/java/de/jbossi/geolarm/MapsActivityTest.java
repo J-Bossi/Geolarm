@@ -32,6 +32,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
 
         solo.finishOpenedActivities();
         mock.shutdown();
+
         activityUnderTest = null;
         Log.i(TAG, "Finish Test");
         super.tearDown();
@@ -41,7 +42,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
     public void setUp() throws Exception {
         super.setUp();
 
-        mock = new MockLocationProvider("locationTestProvider29", getActivity());
+        mock = new MockLocationProvider("locationTestProvider1", getActivity());
         Log.i(TAG, "Setup MOCK Location Providers");
         //Set test location
         mock.pushLocation(-12.34, 23.45, 1.0f);
@@ -94,13 +95,27 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
         solo.waitForView(ImageButton.class);
         Log.i(TAG, "Has View Image Button");
         ImageButton imageButton = (ImageButton) solo.getView(R.id.floatingActionButton);
-        Log.i(TAG, "Attempt to clock on" + imageButton.getTransitionName());
+        Log.i(TAG, "Attempt to click on" + imageButton.getTransitionName());
         solo.clickOnView(imageButton);
-        assertTrue(solo.waitForText("Entfernung beträgt 1 km"));
+        assertTrue(solo.waitForText("Entfernung"));
 
         //solo.assertCurrentActivity("act", MapsActivity.class);
 //        solo.clickOnImageButton(0);
 //        Log.i(TAG, "Clicked On imagebuttom");
         //assertTrue(solo.waitForDialogToOpen());
+    }
+
+    public void testAlarm() throws InterruptedException {
+
+        mock.pushLocation(52.502237, 13.484729, 1.0f);
+        // solo.clickLongOnScreen(801.f, 801.f);
+
+        solo.sleep(5000);
+        // solo.assertCurrentActivity("pp", PlacePicker.class);
+        //solo.clickInList(0); Does not work because external Activity, Robotium only uses internal
+        //solo.clickOnScreen(50.f, 1000);
+        mock.pushLocation(52.502237, 13.484729, 1.0f);
+        solo.assertCurrentActivity("ma", MapsActivity.class);
+        //solo.assertCurrentActivity("alarm", AlarmReceiver.class);
     }
 }
