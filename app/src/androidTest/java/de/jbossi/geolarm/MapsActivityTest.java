@@ -2,6 +2,7 @@ package de.jbossi.geolarm;
 
 
 import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -19,10 +20,11 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
     private Solo solo;
 
     private Activity activityUnderTest;
-    private MockLocationProvider mock;
+    private MockLocationProvider mockLocation;
+    private MockAlarmProvider mockAlarm;
     private static final String TAG = "Maps_Activity_Test";
 
-    @SuppressWarnings("unchecked")
+
     public MapsActivityTest() throws ClassNotFoundException {
         super(MapsActivity.class);
     }
@@ -31,7 +33,8 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
     protected void tearDown() throws Exception {
 
         solo.finishOpenedActivities();
-        mock.shutdown();
+        mockLocation.shutdown();
+        mockAlarm.removeAllAlarms();
 
         activityUnderTest = null;
         Log.i(TAG, "Finish Test");
@@ -42,15 +45,15 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
     public void setUp() throws Exception {
         super.setUp();
 
-        mock = new MockLocationProvider("locationTestProvider1", getActivity());
+        mockLocation = new MockLocationProvider("locationTestProvider1", getActivity());
         Log.i(TAG, "Setup MOCK Location Providers");
         //Set test location
-        mock.pushLocation(-12.34, 23.45, 1.0f);
+        mockLocation.pushLocation(-12.34, 23.45, 1.0f);
 
         LocationManager locMgr = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         LocationListener lis = new LocationListener() {
             public void onLocationChanged(Location location) {
-                //You will get the mock location
+                //You will get the mockLocation location
             }
 
             @Override
@@ -107,15 +110,37 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
 
     public void testAlarm() throws InterruptedException {
 
-        mock.pushLocation(52.502237, 13.484729, 1.0f);
+        mockLocation.pushLocation(52.502237, 13.484729, 1.0f);
         // solo.clickLongOnScreen(801.f, 801.f);
+
 
         solo.sleep(5000);
         // solo.assertCurrentActivity("pp", PlacePicker.class);
         //solo.clickInList(0); Does not work because external Activity, Robotium only uses internal
         //solo.clickOnScreen(50.f, 1000);
-        mock.pushLocation(52.502237, 13.484729, 1.0f);
+        mockLocation.pushLocation(52.502237, 13.484729, 1.0f);
         solo.assertCurrentActivity("ma", MapsActivity.class);
         //solo.assertCurrentActivity("alarm", AlarmReceiver.class);
+    }
+
+    public void testAlarmReceiver() {
+        // Set up an ActivityMonitor
+        Instrumentation.ActivityMonitor alarmReceiverActivityMonitor =
+                getInstrumentation().addMonitor(AlarmReceiver.class.getName(),
+                        null, false);
+
+
+        // set up a new Alarm with new Place
+
+        // push new place
+
+        // Validate that ReceiverActivity is started
+        AlarmReceiver alarmReceiver = (AlarmReceiver) alarmReceiverActivityMonitor.waitForActivity();
+        assertNotNull("AlarmReceiver is null!", alarmReceiver);
+        assertEquals("Monitor for ReceiverActivity has not been called",
+                1, alarmReceiverActivityMonitor.getHits());
+
+        // Remove the ActivityMonitor
+        getInstrumentation().removeMonitor(alarmReceiverActivityMonitor);
     }
 }

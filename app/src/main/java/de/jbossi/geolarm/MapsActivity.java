@@ -35,7 +35,6 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -145,21 +144,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     private GoogleMap.OnMapLongClickListener onMapLongClickListener = new GoogleMap.OnMapLongClickListener() {
-        @Override
         public void onMapLongClick(LatLng latLng) {
-            if (mAlarmMarker == null) {
-                MarkerOptions alarmMarkerOptions = new MarkerOptions().title("Standort")
-                        .snippet("Hier halten Sie sich gerade auf")
-                        .position(latLng);
-                mAlarmMarker = mMap.getMap().addMarker(alarmMarkerOptions);
 
+            startPlacePicker(latLng);
 
-
-            } else {
-                mAlarmMarker.setPosition(latLng);
-
-            }
-            onPickButtonClick(latLng);
         }
     };
 
@@ -172,7 +160,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public void onPositive(MaterialDialog dialog) {
 
-                        mAlarmList.add(new Alarm(place, distance));
+                        mAlarmList.add(new Alarm("TestAlarm", true, place, distance));
 
                         populateGeofenceList();
                     }
@@ -191,7 +179,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setUpDialog.show();
     }
 
-    public void onPickButtonClick(LatLng latLng) {
+    public void startPlacePicker(LatLng latLng) {
         if (true) {
 
         try {
@@ -220,8 +208,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (requestCode == REQUEST_PLACE_PICKER
                 && resultCode == Activity.RESULT_OK) {
 
-            // The user has selected a place. Extract the name and address.
+
             place = PlacePicker.getPlace(data, this);
+            // TODO: Start Setupalarm dialog
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }

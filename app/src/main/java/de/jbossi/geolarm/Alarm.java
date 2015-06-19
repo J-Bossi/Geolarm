@@ -6,6 +6,9 @@ import com.google.android.gms.location.places.Place;
  * Created by Johannes on 26.05.2015.
  */
 public class Alarm {
+
+    private String name;
+    private boolean armed;
     private Place mPlace;
     private float mDistance;
 
@@ -28,10 +31,27 @@ public class Alarm {
         this.mDistance = mDistance;
     }
 
-    public Alarm(Place mPlace, float mDistance) {
+
+    public boolean isArmed() {
+        return armed;
+    }
+
+    public void setArmed(boolean armed) {
+        this.armed = armed;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Alarm(String name, boolean armed, Place mPlace, float mDistance) {
+        this.name = name;
+        this.armed = armed;
         this.mPlace = mPlace;
         this.mDistance = mDistance;
     }
-
-
 }
