@@ -2,22 +2,24 @@ package de.jbossi.geolarm;
 
 import android.content.SharedPreferences;
 
+import com.google.android.gms.location.Geofence;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
-/**
- * Created by Johannes on 30.06.2015.
- */
-@Singleton
+
 public class AlarmRepository {
     private List<Alarm> mAlarms;
     private SharedPreferences mPreferences;
+    private List<Geofence> mGeofenceList = new ArrayList<>();
 
-    @Inject
     public AlarmRepository() {
+        loadAlarms();
+
+    }
+
+    private void loadAlarms() {
         mAlarms = new ArrayList<>();
     }
 
@@ -31,9 +33,12 @@ public class AlarmRepository {
 
     public void addAlarm(Alarm alarm) {
         mAlarms.add(alarm);
+
     }
 
     public void removeAlarm(Alarm alarm) {
         mAlarms.remove(alarm);
     }
+
+
 }

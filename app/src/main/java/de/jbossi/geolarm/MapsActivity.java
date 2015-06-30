@@ -40,7 +40,6 @@ import com.google.android.gms.maps.model.Marker;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
 
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks {
@@ -57,7 +56,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private List<Alarm> mAlarmList;
     protected static final String TAG = "main-activity";
     private GoogleApiClient mGoogleApiClient;
-    @Inject
+
     AlarmRepository mAlarmRepository;
 
 
@@ -79,6 +78,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         distance = 100;
         // Kick off the request to build GoogleApiClient.
         buildGoogleApiClient();
+
+        mAlarmRepository = new AlarmRepository();
+
+
+
         mAlarmList = mAlarmRepository.getmAlarms();
         mGeofenceList = new ArrayList<>();
     }
@@ -176,8 +180,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .positiveColor(R.color.primary_dark).callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
+                        mAlarmRepository.addAlarm(new Alarm("TestAlarm", true, place, distance));
 
-                        mAlarmList.add(new Alarm("TestAlarm", true, place, distance));
 
                         populateGeofenceList();
                     }
@@ -227,7 +231,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
             place = PlacePicker.getPlace(data, this);
-            // TODO: Start Setupalarm dialog
+            showSetAlarmDialog();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -267,7 +271,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void populateGeofenceList() {
-        for (Alarm alarm : mAlarmList) {
+        for (Alarm alarm : mAlarmRepository.getmAlarms()) {
 
             mGeofenceList.add(new Geofence.Builder()
                     // Set the request ID of the geofence. This is a string to identify this

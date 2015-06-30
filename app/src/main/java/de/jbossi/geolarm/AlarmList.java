@@ -7,7 +7,6 @@ import android.widget.ListView;
 
 import java.util.List;
 
-import javax.inject.Inject;
 
 /**
  * Created by Johannes on 19.06.2015.
@@ -16,7 +15,7 @@ public class AlarmList extends ListActivity {
 
     private ListView mAlarmListView;
     private List<Alarm> mAlarms;
-    @Inject
+
     AlarmRepository mRepository;
 
     public AlarmList() {
@@ -27,6 +26,7 @@ public class AlarmList extends ListActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mRepository = new AlarmRepository();
         mAlarms = mRepository.getmAlarms();
         setContentView(R.layout.activity_list);
         //  ArrayAdapter<Alarm> adapter = new ArrayAdapter<Alarm>(this,
