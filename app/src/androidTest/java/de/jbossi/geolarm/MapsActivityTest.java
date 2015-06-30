@@ -20,7 +20,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
 
     private Activity activityUnderTest;
     private MockLocationProvider mockLocation;
-    private MockAlarmProvider mockAlarm;
+    // private MockAlarmProvider mockAlarm;
     private static final String TAG = "Maps_Activity_Test";
 
 
@@ -33,7 +33,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
 
         solo.finishOpenedActivities();
         mockLocation.shutdown();
-        mockAlarm.removeAllAlarms();
+        //   mockAlarm.removeAllAlarms();
 
         activityUnderTest = null;
         Log.i(TAG, "Finish Test");
