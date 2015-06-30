@@ -1,14 +1,19 @@
 package de.jbossi.geolarm;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.android.gms.location.places.Place;
+
+import java.io.Serializable;
 
 /**
  * Created by Johannes on 26.05.2015.
  */
-public class Alarm {
+public class Alarm implements Serializable {
 
     private String name;
     private boolean armed;
+
+    @JsonDeserialize(as = Place.class)
     private Place mPlace;
     private float mDistance;
 
@@ -53,5 +58,8 @@ public class Alarm {
         this.armed = armed;
         this.mPlace = mPlace;
         this.mDistance = mDistance;
+    }
+
+    public Alarm() {
     }
 }

@@ -44,7 +44,7 @@ public class AlarmAdapter extends BaseAdapter {
         View view = currentRow;
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.listitem_alarm, parent);
+            view = inflater.inflate(R.layout.listitem_alarm, parent, false);
             TextView itemName = (TextView) view.findViewById(R.id.item_name);
             TextView itemDistance = (TextView) view.findViewById(R.id.item_distance);
             TextView itemPlace = (TextView) view.findViewById(R.id.item_place);

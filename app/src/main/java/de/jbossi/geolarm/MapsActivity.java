@@ -57,7 +57,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected static final String TAG = "main-activity";
     private GoogleApiClient mGoogleApiClient;
 
-    AlarmRepository mAlarmRepository;
+
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,12 +78,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         distance = 100;
         // Kick off the request to build GoogleApiClient.
         buildGoogleApiClient();
-
-        mAlarmRepository = new AlarmRepository();
-
-
-
-        mAlarmList = mAlarmRepository.getmAlarms();
+        mAlarmList = AlarmRepository.getInstance(this).getmAlarms();
         mGeofenceList = new ArrayList<>();
     }
 
@@ -180,7 +175,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .positiveColor(R.color.primary_dark).callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        mAlarmRepository.addAlarm(new Alarm("TestAlarm", true, place, distance));
+                        AlarmRepository.getInstance(getApplicationContext()).addAlarm(new Alarm("TestAlarm", true, place, distance));
 
 
                         populateGeofenceList();
@@ -271,7 +266,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void populateGeofenceList() {
-        for (Alarm alarm : mAlarmRepository.getmAlarms()) {
+        for (Alarm alarm : AlarmRepository.getInstance(this).getmAlarms()) {
 
             mGeofenceList.add(new Geofence.Builder()
                     // Set the request ID of the geofence. This is a string to identify this

@@ -102,15 +102,18 @@
     <orderEntry type="library" exported="" name="play-services-location-7.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-ads-7.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-7.3.0" level="project" />
+    <orderEntry type="library" exported="" name="jackson-annotations-2.0.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-base-7.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-safetynet-7.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-appinvite-7.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-gcm-7.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-nearby-7.3.0" level="project" />
+    <orderEntry type="library" exported="" name="jackson-core-2.0.1" level="project" />
     <orderEntry type="library" exported="" name="support-v4-22.1.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-fitness-7.3.0" level="project" />
     <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="play-services-plus-7.3.0" level="project" />
+    <orderEntry type="library" exported="" name="jackson-databind-2.0.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-wearable-7.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-appstate-7.3.0" level="project" />
     <orderEntry type="library" exported="" name="material-dialogs-0.7.4.2" level="project" />
