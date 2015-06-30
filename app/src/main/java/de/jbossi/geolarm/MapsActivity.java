@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -39,6 +40,8 @@ import com.google.android.gms.maps.model.Marker;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks {
 
@@ -54,6 +57,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private List<Alarm> mAlarmList;
     protected static final String TAG = "main-activity";
     private GoogleApiClient mGoogleApiClient;
+    @Inject
+    AlarmRepository mAlarmRepository;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +79,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         distance = 100;
         // Kick off the request to build GoogleApiClient.
         buildGoogleApiClient();
-        mAlarmList = new ArrayList<>();
+        mAlarmList = mAlarmRepository.getmAlarms();
         mGeofenceList = new ArrayList<>();
     }
 
@@ -127,17 +132,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_list:
+
+                Intent startListIntent = new Intent(this, AlarmList.class);
+                startActivityForResult(startListIntent, 0);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     public void onMapReady(GoogleMap map) {
 
 
-            Log.i(TAG, "Startin onMapReady");
-            map.setMyLocationEnabled(true);
+        Log.i(TAG, "Startin onMapReady");
+        map.setMyLocationEnabled(true);
         if (getLastBestLocation() != null) {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(getLastBestLocation(), 13));
         }
-            map.setOnMapLongClickListener(onMapLongClickListener);
-            map.getUiSettings().setMapToolbarEnabled(false);
+        map.setOnMapLongClickListener(onMapLongClickListener);
+        map.getUiSettings().setMapToolbarEnabled(false);
 
 
     }
@@ -182,21 +199,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void startPlacePicker(LatLng latLng) {
         if (true) {
 
-        try {
-            PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
-            intentBuilder.setLatLngBounds(Util.computeBounds(latLng));
-            Intent intent = intentBuilder.build(this);
+            try {
+                PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
+                intentBuilder.setLatLngBounds(Util.computeBounds(latLng));
+                Intent intent = intentBuilder.build(this);
 
-            startActivityForResult(intent, REQUEST_PLACE_PICKER);
+                startActivityForResult(intent, REQUEST_PLACE_PICKER);
 
-        } catch (GooglePlayServicesRepairableException e) {
-            GooglePlayServicesUtil
-                    .getErrorDialog(e.getConnectionStatusCode(), this, 0);
-        } catch (GooglePlayServicesNotAvailableException e) {
-            Toast.makeText(this, "Google Play Services is not available.",
-                    Toast.LENGTH_LONG)
-                    .show();
-        }
+            } catch (GooglePlayServicesRepairableException e) {
+                GooglePlayServicesUtil
+                        .getErrorDialog(e.getConnectionStatusCode(), this, 0);
+            } catch (GooglePlayServicesNotAvailableException e) {
+                Toast.makeText(this, "Google Play Services is not available.",
+                        Toast.LENGTH_LONG)
+                        .show();
+            }
 
         }
     }
@@ -215,10 +232,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
-
-
-
-
 
 
     private LatLng getLastBestLocation() {

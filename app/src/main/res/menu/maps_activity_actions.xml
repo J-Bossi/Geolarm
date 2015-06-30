@@ -6,6 +6,12 @@
         android:title="@string/add_alarm"
 
         geolarm:showAsAction="always" />
+    <item
+        android:id="@+id/action_list"
+        android:icon="@drawable/ic_action_list"
+        android:title="@string/add_alarm"
+
+        geolarm:showAsAction="always" />
     <item android:id="@+id/action_settings"
         android:title="@string/settings"
         geolarm:showAsAction="never" />
