@@ -1,4 +1,4 @@
-package de.jbossi.geolarm;
+package de.jbossi.geolarm.services;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -11,6 +11,9 @@ import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
 import java.util.Calendar;
+
+import de.jbossi.geolarm.activities.AlarmReceiver;
+import de.jbossi.geolarm.util.GeofenceErrorMessages;
 
 /**
  * Listener for geofence transition changes.
