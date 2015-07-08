@@ -13,7 +13,7 @@ import com.google.android.gms.location.GeofencingEvent;
 import java.util.Calendar;
 
 import de.jbossi.geolarm.activities.AlarmReceiver;
-import de.jbossi.geolarm.util.GeofenceErrorMessages;
+import de.jbossi.geolarm.GeofenceErrorMessages;
 
 /**
  * Listener for geofence transition changes.
