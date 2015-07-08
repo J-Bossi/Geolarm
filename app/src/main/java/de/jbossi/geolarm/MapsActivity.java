@@ -175,7 +175,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .positiveColor(R.color.primary_dark).callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        AlarmRepository.getInstance(getApplicationContext()).addAlarm(new Alarm("TestAlarm", true, place, distance));
+                        AlarmRepository.getInstance(getApplicationContext()).addAlarm(new Alarm(place.getName(),place.getLatLng(),place.getId(),distance, true));
 
 
                         populateGeofenceList();
@@ -271,18 +271,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mGeofenceList.add(new Geofence.Builder()
                     // Set the request ID of the geofence. This is a string to identify this
                     // geofence.
-                    .setRequestId(alarm.getPlace().getId())
+                    .setRequestId(alarm.getId())
 
                     .setCircularRegion(
-                            alarm.getPlace().getLatLng().latitude,
-                            alarm.getPlace().getLatLng().longitude,
+                            alarm.getPosition().latitude,
+                            alarm.getPosition().longitude,
                             alarm.getDistance()//Distance in meters
                     )
                     .setExpirationDuration(Geofence.NEVER_EXPIRE)
                     .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
                             Geofence.GEOFENCE_TRANSITION_EXIT)
                     .build());
-            Log.i(TAG, "new geofence " + alarm.getPlace().getName());
+            Log.i(TAG, "new geofence " + alarm.getName());
         }
         LocationServices.GeofencingApi.addGeofences(
                 mGoogleApiClient,

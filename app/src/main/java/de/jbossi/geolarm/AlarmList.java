@@ -29,10 +29,8 @@ public class AlarmList extends ListActivity {
 
         mAlarms = AlarmRepository.getInstance(this).getmAlarms();
         setContentView(R.layout.activity_list);
-        //  ArrayAdapter<Alarm> adapter = new ArrayAdapter<Alarm>(this,
-        //          R.layout.listitem_alarm, mAlarms);
         setListAdapter(new AlarmAdapter(mAlarms, this));
-        // mAlarmListView = findViewById(R.id.alarmListView);
+
 
     }
 

@@ -53,7 +53,7 @@ public class AlarmAdapter extends BaseAdapter {
             Alarm alarm = mAlarmList.get(position);
             itemName.setText(alarm.getName());
             itemDistance.setText(Float.toString(alarm.getDistance()));
-            itemPlace.setText(alarm.getPlace().getName());
+            itemPlace.setText(alarm.getName());
             itemArmedSwitch.setChecked(alarm.isArmed());
         }
 
