@@ -1,6 +1,8 @@
-package de.jbossi.geolarm;
+package de.jbossi.geolarm.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -12,10 +14,11 @@ import java.io.Serializable;
 /**
  * Created by Johannes on 26.05.2015.
  */
-public class Alarm implements Serializable {
+public class Alarm {
 
     private CharSequence name;
     private boolean armed;
+    @JsonProperty("position")
     private LatLng position;
     private String id;
     private float distance;
@@ -73,14 +76,5 @@ public class Alarm implements Serializable {
         this.distance = distance;
     }
 
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
-        out.writeDouble(position.latitude);
-        out.writeDouble(position.longitude);
-    }
 
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        position = new LatLng(in.readDouble(), in.readDouble());
-    }
 }

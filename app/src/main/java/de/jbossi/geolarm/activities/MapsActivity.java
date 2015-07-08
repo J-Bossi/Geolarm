@@ -1,4 +1,4 @@
-package de.jbossi.geolarm;
+package de.jbossi.geolarm.activities;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -40,6 +40,11 @@ import com.google.android.gms.maps.model.Marker;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.jbossi.geolarm.models.Alarm;
+import de.jbossi.geolarm.data.AlarmRepository;
+import de.jbossi.geolarm.services.GeofenceTransitionsIntentService;
+import de.jbossi.geolarm.R;
+import de.jbossi.geolarm.util.Util;
 
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks {
@@ -175,7 +180,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .positiveColor(R.color.primary_dark).callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        AlarmRepository.getInstance(getApplicationContext()).addAlarm(new Alarm(place.getName(),place.getLatLng(),place.getId(),distance, true));
+                        AlarmRepository.getInstance(getApplicationContext()).addAlarm(new Alarm(place.getName(), place.getLatLng(), place.getId(), distance, true));
 
 
                         populateGeofenceList();

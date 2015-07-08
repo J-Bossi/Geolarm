@@ -1,4 +1,4 @@
-package de.jbossi.geolarm;
+package de.jbossi.geolarm.activities;
 
 import android.app.ListActivity;
 import android.os.Bundle;
@@ -6,6 +6,11 @@ import android.view.View;
 import android.widget.ListView;
 
 import java.util.List;
+
+import de.jbossi.geolarm.models.Alarm;
+import de.jbossi.geolarm.adapter.AlarmAdapter;
+import de.jbossi.geolarm.data.AlarmRepository;
+import de.jbossi.geolarm.R;
 
 
 /**

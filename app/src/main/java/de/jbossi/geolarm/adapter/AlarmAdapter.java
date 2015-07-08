@@ -1,4 +1,4 @@
-package de.jbossi.geolarm;
+package de.jbossi.geolarm.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.List;
+
+import de.jbossi.geolarm.R;
+import de.jbossi.geolarm.models.Alarm;
 
 /**
  * Created by Johannes on 19.06.2015.

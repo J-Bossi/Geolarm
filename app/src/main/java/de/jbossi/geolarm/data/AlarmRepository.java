@@ -1,4 +1,4 @@
-package de.jbossi.geolarm;
+package de.jbossi.geolarm.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,11 +14,10 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+import de.jbossi.geolarm.models.Alarm;
 
 
 public class AlarmRepository {

@@ -1,4 +1,4 @@
-package de.jbossi.geolarm;
+package de.jbossi.geolarm.activities;
 
 import android.content.Context;
 import android.media.AudioManager;
@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 
 import java.io.IOException;
+
+import de.jbossi.geolarm.R;
 
 public class AlarmReceiver extends FragmentActivity {
 
