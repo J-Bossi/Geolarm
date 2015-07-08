@@ -44,7 +44,7 @@ import de.jbossi.geolarm.models.Alarm;
 import de.jbossi.geolarm.data.AlarmRepository;
 import de.jbossi.geolarm.services.GeofenceTransitionsIntentService;
 import de.jbossi.geolarm.R;
-import de.jbossi.geolarm.Util;
+import de.jbossi.geolarm.util.Util;
 
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks {
