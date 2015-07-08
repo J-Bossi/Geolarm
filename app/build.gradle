@@ -2,6 +2,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
 android {
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+    }
     signingConfigs {
     }
     compileSdkVersion 21
@@ -23,6 +27,7 @@ android {
     }
     productFlavors {
     }
+
 
 }
 
@@ -50,9 +55,12 @@ dependencies {
     compile 'com.google.android.gms:play-services:7.3.0'
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'com.afollestad:material-dialogs:0.7.4.2'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.0.1'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.5.3'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.3'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.5.3'
+
     compile 'com.jayway.android.robotium:robotium-solo:5.2.1'
-    compile 'com.google.code.gson:gson:2.3'
+
     compile 'com.google.dagger:dagger:2.0'
     apt 'com.google.dagger:dagger-compiler:2.0'
     provided 'org.glassfish:javax.annotation:10.0-b28'

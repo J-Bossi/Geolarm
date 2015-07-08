@@ -14,6 +14,8 @@ import android.widget.ImageButton;
 
 import com.robotium.solo.Solo;
 
+import de.jbossi.geolarm.activities.MapsActivity;
+
 
 public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
     private Solo solo;
