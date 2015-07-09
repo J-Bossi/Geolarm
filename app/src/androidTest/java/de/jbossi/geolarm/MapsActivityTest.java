@@ -118,11 +118,11 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
         mockLocation.pushLocation(51.502237, 12.484729, 1.0f);
         solo.sleep(1000);
-        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 100, true));
+        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 200, true));
 
         for (int i = 0; i < 30; i++){
             Log.i(TAG, String.format("Iterating over our location ... (%1$d)", i));
-            mockLocation.pushLocation(52.499238+(i*0.001f), 13.481788+(i*0.001f), 1.0f);
+            mockLocation.pushLocation(52.499238+(i*0.0001f), 13.481788+(i*0.0001f), 1.0f);
             try {
                 Thread.sleep(2000);
             } catch (Exception e) {
