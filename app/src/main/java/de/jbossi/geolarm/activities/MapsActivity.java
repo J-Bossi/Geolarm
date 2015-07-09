@@ -60,7 +60,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private List<Geofence> mGeofenceList;
     private List<Alarm> mAlarmList;
     protected static final String TAG = "main-activity";
-    private GoogleApiClient mGoogleApiClient;
+    public GoogleApiClient mGoogleApiClient;
 
 
 
@@ -180,10 +180,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .positiveColor(R.color.primary_dark).callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        AlarmRepository.getInstance(getApplicationContext()).addAlarm(new Alarm(place.getName(), place.getLatLng(), place.getId(), distance, true));
+                        addAlarm(new Alarm(place.getName(), place.getLatLng(), place.getId(), distance, true));
 
 
-                        populateGeofenceList();
                     }
 
                     @Override
@@ -198,6 +197,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             editLocation.setText(place.getName());
         }
         setUpDialog.show();
+    }
+
+    public void addAlarm(Alarm alarm) {
+        AlarmRepository.getInstance(getApplicationContext()).addAlarm(alarm);
+        Geofence geofence = buildGeofence(alarm);
+        LocationServices.GeofencingApi.addGeofences(
+
+                mGoogleApiClient,
+                getGeofencingRequest(geofence),
+                getGeofencePendingIntent()
+        ).setResultCallback(this);
     }
 
     public void startPlacePicker(LatLng latLng) {
@@ -270,48 +280,45 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    private void populateGeofenceList() {
-        for (Alarm alarm : AlarmRepository.getInstance(this).getmAlarms()) {
+    private Geofence buildGeofence(Alarm alarm) {
 
-            mGeofenceList.add(new Geofence.Builder()
-                    // Set the request ID of the geofence. This is a string to identify this
-                    // geofence.
-                    .setRequestId(alarm.getId())
 
-                    .setCircularRegion(
-                            alarm.getPosition().latitude,
-                            alarm.getPosition().longitude,
-                            alarm.getDistance()//Distance in meters
-                    )
-                    .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
-                            Geofence.GEOFENCE_TRANSITION_EXIT)
-                    .build());
-            Log.i(TAG, "new geofence " + alarm.getName());
-        }
-        LocationServices.GeofencingApi.addGeofences(
-                mGoogleApiClient,
-                getGeofencingRequest(),
-                getGeofencePendingIntent()
-        ).setResultCallback(this);
+        return   new Geofence.Builder()
+                // Set the request ID of the geofence. This is a string to identify this
+                // geofence.
+                .setRequestId(alarm.getId())
+
+                .setCircularRegion(
+                        alarm.getPosition().latitude,
+                        alarm.getPosition().longitude,
+                        alarm.getDistance()//Distance in meters
+                )
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                        Geofence.GEOFENCE_TRANSITION_EXIT)
+                .build();
+
+
+
     }
 
-    private GeofencingRequest getGeofencingRequest() {
+    private GeofencingRequest getGeofencingRequest(Geofence geofence) {
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-        builder.addGeofences(mGeofenceList);
+        builder.addGeofence(geofence);
         return builder.build();
     }
 
     private PendingIntent getGeofencePendingIntent() {
         // Reuse the PendingIntent if we already have it.
-
         Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
         // calling addGeofences() and removeGeofences().
         return PendingIntent.getService(this, 0, intent, PendingIntent.
                 FLAG_UPDATE_CURRENT);
     }
+
+
 
     @Override
     public void onResult(Status status) {
