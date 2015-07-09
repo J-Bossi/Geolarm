@@ -25,6 +25,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
     private MapsActivity activityUnderTest;
     private MockLocationProvider mockLocation;
+    private LocationManager locMgr;
     // private MockAlarmProvider mockAlarm;
     private static final String TAG = "Maps_Activity_Test";
 
@@ -50,13 +51,13 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         super.setUp();
         activityUnderTest = getActivity();
 
-        mockLocation = new MockLocationProvider("locationTestProvider1", getActivity());
+        mockLocation = new MockLocationProvider(getActivity());
         Log.i(TAG, "Setup MOCK Location Providers");
         //Set test location
         mockLocation.pushLocation(-12.34, 23.45, 1.0f);
 
-        LocationManager locMgr = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        LocationListener lis = new LocationListener() {
+        locMgr = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+      /*  LocationListener lis = new LocationListener() {
             public void onLocationChanged(Location location) {
                 //You will get the mockLocation location
             }
@@ -77,10 +78,10 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
             }
 
 
-        };
+        };*/
 
-        locMgr.requestLocationUpdates(
-                LocationManager.NETWORK_PROVIDER, 1000, 1, lis);
+     //   locMgr.requestLocationUpdates(
+   //            LocationManager.NETWORK_PROVIDER, 1000, 1, lis);
         Log.i(TAG, "Requested Location Update");
 
         getInstrumentation().runOnMainSync(new Runnable() {
@@ -117,9 +118,9 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
         mockLocation.pushLocation(52.502237, 13.484729, 1.0f);
         solo.sleep(1000);
-        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788),"1",100,true ));
+        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 100, true));
 
-
+        locMgr.getLastKnownLocation("locationTestProvider1");
         mockLocation.pushLocation(52.502238, 13.484788, 1.0f);
         solo.sleep(1000);
         //solo.assertCurrentActivity("ma", MapsActivity.class);
