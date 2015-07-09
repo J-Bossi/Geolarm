@@ -120,9 +120,18 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         solo.sleep(1000);
         activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 100, true));
 
-        locMgr.getLastKnownLocation("locationTestProvider1");
-        mockLocation.pushLocation(52.502238, 13.484788, 1.0f);
-        solo.sleep(10000);
+        for (int i = 0; i < 30; i++){
+            Log.i(TAG, String.format("Iterating over our location ... (%1$d)", i));
+            mockLocation.pushLocation(52.502238, 13.484788, 1.0f);
+            try {
+                Thread.sleep(500);
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage(), e);
+            }
+        }
+
+
+        solo.waitForActivity(AlarmReceiver.class);
         //solo.assertCurrentActivity("ma", MapsActivity.class);
         solo.assertCurrentActivity("alarm", AlarmReceiver.class);
     }
