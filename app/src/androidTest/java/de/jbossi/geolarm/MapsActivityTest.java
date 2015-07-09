@@ -122,7 +122,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
         locMgr.getLastKnownLocation("locationTestProvider1");
         mockLocation.pushLocation(52.502238, 13.484788, 1.0f);
-        solo.sleep(1000);
+        solo.sleep(10000);
         //solo.assertCurrentActivity("ma", MapsActivity.class);
         solo.assertCurrentActivity("alarm", AlarmReceiver.class);
     }
