@@ -28,7 +28,7 @@ before_script:
 - sleep 10
 script:
 
-- "./gradlew build connectedAndroidTest --stacktrace -PdisablePreDex"
+- "./gradlew build connectedCheck --stacktrace -PdisablePreDex"
 
 #deploy:
 #  provider: releases
