@@ -60,7 +60,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
 
         // Test that the reported transition was of interest.
-        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
+        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER || geofenceTransition == Geofence.GEOFENCE_TRANSITION_DWELL || geofenceTransition == Geofence.GEOFENCE_TRANSITION_DWELL ) {
 
             // Get the geofences that were triggered. A single event can trigger multiple geofences.
             //    List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
@@ -75,7 +75,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
 
     private void sendAlarm() {
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.SECOND, 2);
+        cal.add(Calendar.SECOND, 1);
         Intent intent = new Intent(this, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
                 12345, intent, PendingIntent.FLAG_CANCEL_CURRENT);

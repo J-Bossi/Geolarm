@@ -2,6 +2,7 @@ package de.jbossi.geolarm;
 
 
 import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -21,6 +22,7 @@ import de.jbossi.geolarm.activities.MapsActivity;
 import de.jbossi.geolarm.events.GeoFenceUpdateEvent;
 import de.jbossi.geolarm.events.LocationUpdateEvent;
 import de.jbossi.geolarm.models.Alarm;
+import de.jbossi.geolarm.services.GeofenceTransitionsIntentService;
 
 
 public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActivity> {
@@ -151,11 +153,8 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         solo.assertCurrentActivity("alarm", AlarmReceiver.class);
     }
 
-    //public void testAlarmReceiver() {
-        // Set up an ActivityMonitor
-        // Instrumentation.ActivityMonitor alarmReceiverActivityMonitor =
-        //        getInstrumentation().addMonitor(AlarmReceiver.class.getName(),
-        //                null, false);
+  //  public void testGeofence() {
+
 
 
         // set up a new Alarm with new Place
