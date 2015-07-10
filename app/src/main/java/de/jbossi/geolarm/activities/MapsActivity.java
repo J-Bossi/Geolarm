@@ -200,6 +200,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void addAlarm(Alarm alarm) {
         AlarmRepository.getInstance(getApplicationContext()).addAlarm(alarm);
         Geofence geofence = buildGeofence(alarm);
+
         LocationServices.GeofencingApi.addGeofences(
 
                 mGoogleApiClient,

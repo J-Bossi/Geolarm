@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.robotium.solo.Solo;
 
@@ -33,6 +34,8 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
     private LocationManager locMgr;
     // private MockAlarmProvider mockAlarm;
     private static final String TAG = "Maps_Activity_Test";
+    private int geofenceHits = 0;
+    private int locationHits = 0;
 
 
     public MapsActivityTest() throws ClassNotFoundException {
@@ -62,6 +65,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         mockLocation.pushLocation(-12.34, 23.45, 1.0f);
 
         locMgr = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 2000, true));
       /*  LocationListener lis = new LocationListener() {
             public void onLocationChanged(Location location) {
                 //You will get the mockLocation location
@@ -105,12 +109,12 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
     }
 
     public void onEvent(final GeoFenceUpdateEvent event) {
-        // This doesn't get called about 9/10 times.
-        // I have a GeoFence with a 5000m radius around 32.652411, -79.938063
+        geofenceHits++;
+        Log.i("Geofence","Geofence got hit");
     }
 
     public void onEvent(final LocationUpdateEvent event) {
-        // This gets called without incident and event.getLatitude() & event.getLongitude() are correct.
+       locationHits++;
     }
 
 
@@ -129,13 +133,15 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         //assertTrue(solo.waitForDialogToOpen());
     }*/
 
-    public void testAlarm() throws InterruptedException {
+    public void testExistingGeofence () {
 
-        mockLocation.pushLocation(51.502237, 12.484729, 1.0f);
-        solo.sleep(1000);
+    }
+
+    public void testIsConncted() {
         assertEquals(true, activityUnderTest.mGoogleApiClient.isConnected());
-        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 2000, true));
+    }
 
+    public void testPathAlarm() throws InterruptedException {
 
         for (int i = 0; i < 30; i++){
             Log.i(TAG, String.format("Iterating over the location ... (%1$d)", i));
@@ -146,28 +152,14 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
                 Log.e(TAG, e.getMessage(), e);
             }
         }
+        mockLocation.pushLocation(1.0, 1.0, 1.0f);
+        mockLocation.pushLocation(52.499238, 13.481788, 1.0f);
 
-
+        assertTrue(geofenceHits > 0);
         solo.waitForActivity(AlarmReceiver.class);
         //solo.assertCurrentActivity("ma", MapsActivity.class);
         solo.assertCurrentActivity("alarm", AlarmReceiver.class);
     }
 
-  //  public void testGeofence() {
 
-
-
-        // set up a new Alarm with new Place
-
-        // push new place
-
-        // Validate that ReceiverActivity is started
-        //AlarmReceiver alarmReceiver = (AlarmReceiver) alarmReceiverActivityMonitor.waitForActivity();
-        // assertNotNull("AlarmReceiver is null!", alarmReceiver);
-        //assertEquals("Monitor for ReceiverActivity has not been called",
-        //        1, alarmReceiverActivityMonitor.getHits());
-
-        // Remove the ActivityMonitor
-        // getInstrumentation().removeMonitor(alarmReceiverActivityMonitor);
-  //  }
 }

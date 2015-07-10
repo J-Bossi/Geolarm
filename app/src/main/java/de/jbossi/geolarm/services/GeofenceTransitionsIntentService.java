@@ -12,8 +12,10 @@ import com.google.android.gms.location.GeofencingEvent;
 
 import java.util.Calendar;
 
+import de.greenrobot.event.EventBus;
 import de.jbossi.geolarm.activities.AlarmReceiver;
 import de.jbossi.geolarm.GeofenceErrorMessages;
+import de.jbossi.geolarm.events.GeoFenceUpdateEvent;
 
 /**
  * Listener for geofence transition changes.
@@ -66,7 +68,8 @@ public class GeofenceTransitionsIntentService extends IntentService {
             //    List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
 
             sendAlarm();
-            Log.i(TAG, "blubbb");
+            EventBus.getDefault().post(new GeoFenceUpdateEvent());
+
         } else {
             // Log the error.
             Log.e(TAG, "Transition Type invalid: ");
