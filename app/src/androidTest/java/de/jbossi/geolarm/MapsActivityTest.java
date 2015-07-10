@@ -15,8 +15,11 @@ import android.widget.ImageButton;
 import com.google.android.gms.maps.model.LatLng;
 import com.robotium.solo.Solo;
 
+import de.greenrobot.event.EventBus;
 import de.jbossi.geolarm.activities.AlarmReceiver;
 import de.jbossi.geolarm.activities.MapsActivity;
+import de.jbossi.geolarm.events.GeoFenceUpdateEvent;
+import de.jbossi.geolarm.events.LocationUpdateEvent;
 import de.jbossi.geolarm.models.Alarm;
 
 
@@ -40,7 +43,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         solo.finishOpenedActivities();
         mockLocation.shutdown();
         //   mockAlarm.removeAllAlarms();
-
+        EventBus.getDefault().unregister(this);
         activityUnderTest = null;
         Log.i(TAG, "Finish Test");
         super.tearDown();
@@ -95,7 +98,17 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         Log.i(TAG, "Wait for activity");
         solo.waitForActivity("MapsActivity");
         Log.i(TAG, "Has Activity");
+        EventBus.getDefault().register(this);
         //    solo.clickOnImageButton(0);
+    }
+
+    public void onEvent(final GeoFenceUpdateEvent event) {
+        // This doesn't get called about 9/10 times.
+        // I have a GeoFence with a 5000m radius around 32.652411, -79.938063
+    }
+
+    public void onEvent(final LocationUpdateEvent event) {
+        // This gets called without incident and event.getLatitude() & event.getLongitude() are correct.
     }
 
 
@@ -119,7 +132,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         mockLocation.pushLocation(51.502237, 12.484729, 1.0f);
         solo.sleep(1000);
         assertEquals(true, activityUnderTest.mGoogleApiClient.isConnected());
-        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 200, true));
+        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 2000, true));
 
 
         for (int i = 0; i < 30; i++){

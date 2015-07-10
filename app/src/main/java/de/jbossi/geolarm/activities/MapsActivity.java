@@ -50,13 +50,12 @@ import de.jbossi.geolarm.Util;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks {
 
     private MapFragment mMap; // Might be null if Google Play services APK is not available.
-    private LocationManager mlocationManager;
-
     private ImageButton mFloatingActionButton;
     private EditText editLocation;
     private Place place;
     private float distance;
     int REQUEST_PLACE_PICKER = 1;
+    private Location mLastLocation;
 
 
     protected static final String TAG = "main-activity";
@@ -69,7 +68,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        mlocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
         mMap = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mMap.getMapAsync(this);
@@ -114,7 +113,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
 
     public void onConnected(Bundle connectionHint) {
-        Log.i(TAG, "Connected to GoogleApiClient");
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (mLastLocation != null) {
+
+        }
     }
 
     @Override
@@ -153,21 +156,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         Log.i(TAG, "Startin onMapReady");
         map.setMyLocationEnabled(true);
-        if (getLastBestLocation() != null) {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(getLastBestLocation(), 13));
+        if (mLastLocation != null) {
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude()), 13));
         }
         map.setOnMapLongClickListener(onMapLongClickListener);
         map.getUiSettings().setMapToolbarEnabled(false);
-
-
     }
 
 
     private GoogleMap.OnMapLongClickListener onMapLongClickListener = new GoogleMap.OnMapLongClickListener() {
         public void onMapLongClick(LatLng latLng) {
-
             startPlacePicker(latLng);
-
         }
     };
 
@@ -210,7 +209,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void startPlacePicker(LatLng latLng) {
-        if (true) {
+
 
             try {
                 PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
@@ -228,7 +227,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .show();
             }
 
-        }
+
     }
 
 
@@ -247,37 +246,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    private LatLng getLastBestLocation() {
 
-        Location locationGPS = mlocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        Location locationNet = mlocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
-
-        long GPSLocationTime = 0;
-        try {
-            if (locationGPS == null & locationNet == null) {
-                throw new Exception();
-            }
-            if (null != locationGPS) {
-                GPSLocationTime = locationGPS.getTime();
-            }
-
-            long NetLocationTime = 0;
-
-            if (null != locationNet) {
-                NetLocationTime = locationNet.getTime();
-            }
-
-            if (0 < GPSLocationTime - NetLocationTime) {
-                return new LatLng(locationGPS.getLatitude(), locationGPS.getLongitude());
-            } else {
-                return new LatLng(locationNet.getLatitude(), locationNet.getLongitude());
-            }
-        } catch (Exception e) {
-            return null;
-        }
-
-    }
 
     private Geofence buildGeofence(Alarm alarm) {
 
