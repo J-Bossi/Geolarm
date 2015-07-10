@@ -99,7 +99,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
     }
 
 
-    public void testRun() {
+/*    public void testRun() {
         Log.i(TAG, "Run Actual Test");
         solo.waitForView(ImageButton.class);
         Log.i(TAG, "Has View Image Button");
@@ -112,7 +112,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 //        solo.clickOnImageButton(0);
 //        Log.i(TAG, "Clicked On imagebuttom");
         //assertTrue(solo.waitForDialogToOpen());
-    }
+    }*/
 
     public void testAlarm() throws InterruptedException {
 
@@ -121,7 +121,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 200, true));
 
         for (int i = 0; i < 30; i++){
-            Log.i(TAG, String.format("Iterating over our location ... (%1$d)", i));
+            Log.i(TAG, String.format("Iterating over the location ... (%1$d)", i));
             mockLocation.pushLocation(52.499238+(i*0.0001f), 13.481788+(i*0.0001f), 1.0f);
             try {
                 Thread.sleep(2000);
@@ -136,7 +136,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         solo.assertCurrentActivity("alarm", AlarmReceiver.class);
     }
 
-    public void testAlarmReceiver() {
+    //public void testAlarmReceiver() {
         // Set up an ActivityMonitor
         // Instrumentation.ActivityMonitor alarmReceiverActivityMonitor =
         //        getInstrumentation().addMonitor(AlarmReceiver.class.getName(),
@@ -155,5 +155,5 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
         // Remove the ActivityMonitor
         // getInstrumentation().removeMonitor(alarmReceiverActivityMonitor);
-    }
+  //  }
 }
