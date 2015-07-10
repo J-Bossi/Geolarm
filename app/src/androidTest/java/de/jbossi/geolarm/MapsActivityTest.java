@@ -118,7 +118,9 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
         mockLocation.pushLocation(51.502237, 12.484729, 1.0f);
         solo.sleep(1000);
+        assertEquals(true, activityUnderTest.mGoogleApiClient.isConnected());
         activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 200, true));
+
 
         for (int i = 0; i < 30; i++){
             Log.i(TAG, String.format("Iterating over the location ... (%1$d)", i));

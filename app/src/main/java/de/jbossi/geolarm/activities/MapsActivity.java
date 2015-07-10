@@ -51,14 +51,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private MapFragment mMap; // Might be null if Google Play services APK is not available.
     private LocationManager mlocationManager;
-    private Marker mAlarmMarker;
+
     private ImageButton mFloatingActionButton;
     private EditText editLocation;
     private Place place;
     private float distance;
     int REQUEST_PLACE_PICKER = 1;
-    private List<Geofence> mGeofenceList;
-    private List<Alarm> mAlarmList;
+
+
     protected static final String TAG = "main-activity";
     public GoogleApiClient mGoogleApiClient;
 
@@ -83,8 +83,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         distance = 100;
         // Kick off the request to build GoogleApiClient.
         buildGoogleApiClient();
-        mAlarmList = AlarmRepository.getInstance(this).getmAlarms();
-        mGeofenceList = new ArrayList<>();
+
     }
 
     /**
