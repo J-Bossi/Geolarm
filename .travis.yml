@@ -20,7 +20,7 @@ before_install:
 - chmod +x gradlew
 before_script:
 - android list target
-- echo no | android create avd --force -n test -t "Google Inc.:Google APIs:21"
+- echo no | android create avd --force -n test -t "Google Inc.:Google APIs:22"
   --abi $ANDROID_ABI
 - emulator -avd test -no-skin -no-audio -no-window &
 - chmod +x wait_for_emulator.sh
