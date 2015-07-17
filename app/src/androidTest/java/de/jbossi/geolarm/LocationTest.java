@@ -39,17 +39,25 @@ public class LocationTest extends AndroidTestCase {
     public void testCurrentLocation() {
         try {
         mockLocation.pushLocation(52.218887, 21.024797, 1.0f);
-       // locManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-            Thread.sleep(100);
+        locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
-        assertEquals(21.024797, locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLongitude());
-        assertEquals(52.218887, locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLatitude());
+            int i = 0;
+            Location lastKnownLocation = locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            while (lastKnownLocation == null) {
+                lastKnownLocation = locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                i++;
+                Log.i("THREAD", "Sleep" + i);
+            }
+
+
+        assertNotNull(lastKnownLocation);
+
+        assertEquals(21.024797, lastKnownLocation.getLongitude());
+        assertEquals(52.218887, lastKnownLocation.getLatitude());
 
         mockLocation.pushLocation(52.218887, 25.024797, 1.0f);
 
-
             Thread.sleep(100);
-
 
         assertEquals(25.024797, locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLongitude());
         assertEquals(52.218887, locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLatitude());
