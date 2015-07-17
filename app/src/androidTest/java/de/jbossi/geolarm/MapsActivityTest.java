@@ -24,13 +24,11 @@ import com.robotium.solo.Solo;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import de.greenrobot.event.EventBus;
+
 import de.jbossi.geolarm.activities.AlarmReceiver;
 import de.jbossi.geolarm.activities.MapsActivity;
-import de.jbossi.geolarm.events.GeoFenceUpdateEvent;
-import de.jbossi.geolarm.events.LocationUpdateEvent;
 import de.jbossi.geolarm.models.Alarm;
-import de.jbossi.geolarm.services.GeofenceTransitionsIntentService;
+
 
 
 public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActivity> {
@@ -38,15 +36,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
     public static final String TAG = MapsActivityTest.class.getSimpleName();
 
     private Solo solo;
-
     private MapsActivity activityUnderTest;
-
-    private LocationManager locMgr;
-    // private MockAlarmProvider mockAlarm;
-
-    private int geofenceHits = 0;
-    private int locationHits = 0;
-
 
     public MapsActivityTest() throws ClassNotFoundException {
         super(MapsActivity.class);
@@ -57,7 +47,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
         solo.finishOpenedActivities();
 
-        EventBus.getDefault().unregister(this);
+
         activityUnderTest = null;
         Log.i(TAG, "Finish Test");
         super.tearDown();
@@ -89,7 +79,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         Log.i(TAG, "Wait for activity");
         solo.waitForActivity("MapsActivity");
         Log.i(TAG, "Has Activity");
-        EventBus.getDefault().register(this);
+
 
     }
 
@@ -100,35 +90,6 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
     }
 
 
-
-    public void onEvent(final GeoFenceUpdateEvent event) {
-        geofenceHits++;
-        Log.i("Geofence","Geofence got hit");
-    }
-
-    public void onEvent(final LocationUpdateEvent event) {
-       locationHits++;
-    }
-
-
-/*    public void testRun() {
-        Log.i(TAG, "Run Actual Test");
-        solo.waitForView(ImageButton.class);
-        Log.i(TAG, "Has View Image Button");
-        ImageButton imageButton = (ImageButton) solo.getView(R.id.floatingActionButton);
-        Log.i(TAG, "Attempt to click on" + imageButton.getTransitionName());
-        solo.clickOnView(imageButton);
-        assertTrue(solo.waitForText("Entfernung"));
-
-        //solo.assertCurrentActivity("act", MapsActivity.class);
-//        solo.clickOnImageButton(0);
-//        Log.i(TAG, "Clicked On imagebuttom");
-        //assertTrue(solo.waitForDialogToOpen());
-    }*/
-
-    public void testExistingGeofence () {
-
-    }
 
     public void testIsConncted() {
         assertEquals(true, activityUnderTest.mGoogleApiClient.isConnected());
@@ -144,6 +105,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
             }
 
         }
+        solo.waitForActivity(AlarmReceiver.class);
         solo.assertCurrentActivity("alarm", AlarmReceiver.class);
     }
 

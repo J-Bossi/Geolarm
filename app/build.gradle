@@ -60,7 +60,6 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.3'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.5.3'
 
-    compile 'de.greenrobot:eventbus:2.4.0'
 
     compile 'com.jayway.android.robotium:robotium-solo:5.2.1'
 
