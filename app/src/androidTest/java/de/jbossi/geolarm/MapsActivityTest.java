@@ -100,13 +100,13 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         for (int i = 0; i < 30; i++){
             Log.i(TAG, String.format("Iterating over the location ... (%1$d)", i));
             pushLocation(52.499238 + (i * 0.0001f), 13.481788 + (i * 0.0001f), 1.0f);
+            Thread.sleep(1000);
             if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
                 break;
             }
 
         }
-        solo.waitForActivity(AlarmReceiver.class);
-        solo.assertCurrentActivity("alarm", AlarmReceiver.class);
+        assertTrue(solo.waitForActivity(AlarmReceiver.class));
     }
 
     public void pushLocation(final double lat,final double lon, final float acc) {
