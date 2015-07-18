@@ -77,14 +77,26 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
         solo = new Solo(getInstrumentation(), getActivity());
 
+        try {
+            Log.i(TAG, "LocationMode Status is " + Settings.Secure.getInt(activityUnderTest.getContentResolver(), Settings.Secure.LOCATION_MODE));
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
         LocationManager lm = (LocationManager)activityUnderTest.getSystemService(Context.LOCATION_SERVICE);
-        lm.addTestProvider(LocationManager.NETWORK_PROVIDER, true, false, true, false, false, false, false, Criteria.POWER_MEDIUM, Criteria.ACCURACY_FINE);
-        lm.setTestProviderEnabled(LocationManager.NETWORK_PROVIDER,true);
+        lm.addTestProvider(LocationManager.NETWORK_PROVIDER, false, false, false, false, false, false, false, Criteria.POWER_MEDIUM, Criteria.ACCURACY_FINE);
+        lm.setTestProviderEnabled(LocationManager.NETWORK_PROVIDER, true);
+        lm.setTestProviderStatus(LocationManager.NETWORK_PROVIDER,LocationProvider.AVAILABLE,null,System.currentTimeMillis());
 
 
+        try {
+            Log.i(TAG, "LocationMode Status is " + Settings.Secure.getInt(activityUnderTest.getContentResolver(), Settings.Secure.LOCATION_MODE));
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
         pushLocation(10.00001, 10.00001, 1.0f);
         activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 500, true));
-        Log.i(TAG,"Trying to add new Geofence");
+        Log.i(TAG, "Trying to add new Geofence");
+        lm.removeTestProvider(LocationManager.NETWORK_PROVIDER);
 
     }
 
@@ -150,11 +162,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         // We use a CountDownLatch to ensure that all asynchronous tasks complete within setUp. We
         // set the CountDownLatch count to 1 and decrement this count only when we are certain that
         // mock location has been set.
-        try {
-            Log.i(TAG, "LocationMode Status is " + Settings.Secure.getInt(activityUnderTest.getContentResolver(), Settings.Secure.LOCATION_MODE));
-        } catch (Settings.SettingNotFoundException e) {
-            e.printStackTrace();
-        }
+
 
         final CountDownLatch lock = new CountDownLatch(1);
 
