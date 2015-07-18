@@ -35,5 +35,7 @@ deploy:
   access_key_id: "AKIAI4YNVFFTK52NOR4A"
   secret_access_key: "YZp1jPKsY38jKAp9FZqtTjdIs+q3FKSOpRAzESmMw"
   bucket: "geolarm"
+  region: eu-central-1
+  endpoint: s3-eu-central-1.amazonaws.com
   skip_cleanup: true
 
