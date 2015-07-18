@@ -99,6 +99,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
+        addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 500, true));
+        try {
+            Log.i(TAG, "LocationMode qwertz "+ Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.LOCATION_MODE));
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -280,6 +286,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onResult(Status status) {
         Log.i(TAG, "Geofence Intent Result came back " + status.getStatusCode());
+        try {
+            Log.i(TAG, "LocationModeqwertz "+ Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.LOCATION_MODE));
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
         if (status.getStatusCode() == 0) {
             mSuccess = true;
         } else {
@@ -295,6 +306,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onConnectionFailed(ConnectionResult connectionResult) {
         int locationMode;
         try {
+
             locationMode = Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.LOCATION_MODE);
 
             // Check if Location services in ON and if YES then make sure its in either HIGH_ACCURACY or POWER_SAVING mode (Not in GPS_ONLY)

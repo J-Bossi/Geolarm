@@ -11,6 +11,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.view.WindowManager;
@@ -142,6 +143,12 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         // We use a CountDownLatch to ensure that all asynchronous tasks complete within setUp. We
         // set the CountDownLatch count to 1 and decrement this count only when we are certain that
         // mock location has been set.
+        try {
+            Log.i(TAG, "LocationMode qwertz Test "+ Settings.Secure.getInt(activityUnderTest.getContentResolver(), Settings.Secure.LOCATION_MODE));
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+
         final CountDownLatch lock = new CountDownLatch(1);
 
         // First, ensure that the location provider is in mock mode. Using setMockMode() ensures
