@@ -20,24 +20,22 @@ before_install:
 - echo no | android create avd --force -n test -t "Google Inc.:Google APIs:21"
   --abi google_apis/armeabi-v7a
 - emulator -avd test -no-skin -no-audio -no-window &
+- android-wait-for-emulator
 
 before_script:
-- android-wait-for-emulator
+
 - adb logcat &
 - adb shell input keyevent 82 &
-- adb shell settings put secure location_providers_allow network,gps
-- adb shell input keyevent 22
-- adb shell input keyevent 23
-
 
 
 script:
+- adb shell settings put secure location_providers_allowed network,gps &
+- adb shell input keyevent 22 &
+- adb shell input keyevent 23 &
 
 - "./gradlew build connectedCheck --stacktrace --continue -PdisablePreDex"
 
 after_script:
-
-
 #deploy:
 #  provider: s3
 #  access_key_id: "AKIAI4YNVFFTK52NOR4A"
