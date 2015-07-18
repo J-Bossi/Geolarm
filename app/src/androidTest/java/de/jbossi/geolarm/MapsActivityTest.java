@@ -121,7 +121,6 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
             if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
                 break;
             }
-
         }
         assertTrue(activityUnderTest.getSuccess());
         assertTrue(solo.waitForActivity(AlarmReceiver.class));
