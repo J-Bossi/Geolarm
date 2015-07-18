@@ -23,14 +23,16 @@ before_install:
 
 before_script:
 - android-wait-for-emulator
+- adb logcat &
 - adb shell input keyevent 82 &
+
 
 script:
 
 - "./gradlew build connectedCheck --stacktrace --continue -PdisablePreDex"
 
 after_script:
-  - adb logcat &
+
 
 deploy:
   provider: s3
@@ -39,5 +41,6 @@ deploy:
   bucket: "geolarm"
   region: eu-central-1
   endpoint: s3-eu-central-1.amazonaws.com
+  file: file:///home/travis/build/J-Bossi/Geolarm/app/build/outputs/*
   skip_cleanup: true
 
