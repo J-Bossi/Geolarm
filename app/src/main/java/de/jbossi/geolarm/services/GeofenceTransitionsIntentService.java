@@ -12,9 +12,8 @@ import com.google.android.gms.location.GeofencingEvent;
 
 import java.util.Calendar;
 
-
-import de.jbossi.geolarm.activities.AlarmReceiver;
 import de.jbossi.geolarm.GeofenceErrorMessages;
+import de.jbossi.geolarm.activities.AlarmReceiver;
 
 
 /**
@@ -62,7 +61,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
 
         // Test that the reported transition was of interest.
-        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ) {
+        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
 
             // Get the geofences that were triggered. A single event can trigger multiple geofences.
             //    List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();

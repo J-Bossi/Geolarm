@@ -7,10 +7,10 @@ import android.widget.ListView;
 
 import java.util.List;
 
-import de.jbossi.geolarm.models.Alarm;
+import de.jbossi.geolarm.R;
 import de.jbossi.geolarm.adapter.AlarmAdapter;
 import de.jbossi.geolarm.data.AlarmRepository;
-import de.jbossi.geolarm.R;
+import de.jbossi.geolarm.models.Alarm;
 
 
 /**
@@ -20,7 +20,6 @@ public class AlarmList extends ListActivity {
 
     private ListView mAlarmListView;
     private List<Alarm> mAlarms;
-
 
 
     public AlarmList() {

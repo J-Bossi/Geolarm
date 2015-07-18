@@ -19,6 +19,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.robotium.solo.Solo;
@@ -97,13 +98,11 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         assertEquals(result, ConnectionResult.SUCCESS);
     }
 
-    public void  testLocationAvailability() {
-        assertTrue(LocationServices.FusedLocationApi.getLocationAvailability(activityUnderTest.mGoogleApiClient).isLocationAvailable());
-    }
 
     public void testMockLocation()  throws InterruptedException{
         pushLocation(10.0, 10.0, 1.0f);
         Thread.sleep(1000);
+        assertTrue(activityUnderTest.getSuccess());
         Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(activityUnderTest.mGoogleApiClient);
         Log.i(TAG,lastLocation.toString());
 

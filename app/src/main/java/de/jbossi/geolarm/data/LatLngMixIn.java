@@ -1,6 +1,5 @@
 package de.jbossi.geolarm.data;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -11,11 +10,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public abstract class LatLngMixIn {
 
 
-
-    LatLngMixIn(@JsonProperty("latitude") double latitude,@JsonProperty("longitude") double longitude ) {
+    LatLngMixIn(@JsonProperty("latitude") double latitude, @JsonProperty("longitude") double longitude) {
 
     }
 
 
- //   @JsonProperty("longitude") abstract double getLongitude();
+    //   @JsonProperty("longitude") abstract double getLongitude();
 }

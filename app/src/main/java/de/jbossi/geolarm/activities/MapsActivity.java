@@ -2,10 +2,8 @@ package de.jbossi.geolarm.activities;
 
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -26,6 +24,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
@@ -35,34 +34,31 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import de.jbossi.geolarm.models.Alarm;
-import de.jbossi.geolarm.data.AlarmRepository;
-import de.jbossi.geolarm.services.GeofenceTransitionsIntentService;
 import de.jbossi.geolarm.R;
 import de.jbossi.geolarm.Util;
+import de.jbossi.geolarm.data.AlarmRepository;
+import de.jbossi.geolarm.models.Alarm;
+import de.jbossi.geolarm.services.GeofenceTransitionsIntentService;
 
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks {
 
+    protected static final String TAG = "main-activity";
+    public GoogleApiClient mGoogleApiClient;
+    int REQUEST_PLACE_PICKER = 1;
     private MapFragment mMap; // Might be null if Google Play services APK is not available.
     private ImageButton mFloatingActionButton;
     private EditText editLocation;
     private Place place;
     private float distance;
-    int REQUEST_PLACE_PICKER = 1;
     private Location mLastLocation;
-
-
-    protected static final String TAG = "main-activity";
-    public GoogleApiClient mGoogleApiClient;
-
-
-
+    private boolean mSuccess = false;
+    private GoogleMap.OnMapLongClickListener onMapLongClickListener = new GoogleMap.OnMapLongClickListener() {
+        public void onMapLongClick(LatLng latLng) {
+            startPlacePicker(latLng);
+        }
+    };
 
     protected void onCreate(Bundle savedInstanceState) {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -157,18 +153,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.i(TAG, "Startin onMapReady");
         map.setMyLocationEnabled(true);
         if (mLastLocation != null) {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude()), 13));
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 13));
         }
         map.setOnMapLongClickListener(onMapLongClickListener);
         map.getUiSettings().setMapToolbarEnabled(false);
     }
-
-
-    private GoogleMap.OnMapLongClickListener onMapLongClickListener = new GoogleMap.OnMapLongClickListener() {
-        public void onMapLongClick(LatLng latLng) {
-            startPlacePicker(latLng);
-        }
-    };
 
     public void showSetAlarmDialog() {
 
@@ -212,21 +201,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void startPlacePicker(LatLng latLng) {
 
 
-            try {
-                PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
-                intentBuilder.setLatLngBounds(Util.computeBounds(latLng));
-                Intent intent = intentBuilder.build(this);
+        try {
+            PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
+            intentBuilder.setLatLngBounds(Util.computeBounds(latLng));
+            Intent intent = intentBuilder.build(this);
 
-                startActivityForResult(intent, REQUEST_PLACE_PICKER);
+            startActivityForResult(intent, REQUEST_PLACE_PICKER);
 
-            } catch (GooglePlayServicesRepairableException e) {
-                GooglePlayServicesUtil
-                        .getErrorDialog(e.getConnectionStatusCode(), this, 0);
-            } catch (GooglePlayServicesNotAvailableException e) {
-                Toast.makeText(this, "Google Play Services is not available.",
-                        Toast.LENGTH_LONG)
-                        .show();
-            }
+        } catch (GooglePlayServicesRepairableException e) {
+            GooglePlayServicesUtil
+                    .getErrorDialog(e.getConnectionStatusCode(), this, 0);
+        } catch (GooglePlayServicesNotAvailableException e) {
+            Toast.makeText(this, "Google Play Services is not available.",
+                    Toast.LENGTH_LONG)
+                    .show();
+        }
 
 
     }
@@ -247,12 +236,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-
-
     private Geofence buildGeofence(Alarm alarm) {
 
 
-        return   new Geofence.Builder()
+        return new Geofence.Builder()
                 // Set the request ID of the geofence. This is a string to identify this
                 // geofence.
                 .setRequestId(alarm.getId())
@@ -266,7 +253,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
                         Geofence.GEOFENCE_TRANSITION_EXIT)
                 .build();
-
 
 
     }
@@ -288,9 +274,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-
     @Override
     public void onResult(Status status) {
-        Log.i(TAG, "I have to to somethong with the onResult method " + status.getStatusMessage());
+        Log.i(TAG, "Geofence Intent Result came back " + status.getStatusCode());
+        if (status.getStatusCode() == 0) {
+            mSuccess = true;
+        } else {
+            mSuccess = false;
+        }
+    }
+
+    public boolean getSuccess() {
+        return mSuccess;
     }
 }
