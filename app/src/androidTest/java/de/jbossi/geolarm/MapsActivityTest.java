@@ -3,6 +3,7 @@ package de.jbossi.geolarm;
 
 import android.app.Activity;
 import android.app.Instrumentation;
+import android.app.ListActivity;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -28,6 +29,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 
+import de.jbossi.geolarm.activities.AlarmList;
 import de.jbossi.geolarm.activities.AlarmReceiver;
 import de.jbossi.geolarm.activities.MapsActivity;
 import de.jbossi.geolarm.models.Alarm;
@@ -63,10 +65,6 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         ensureGoogleApiClientConnection();
         ensureInstalledDependencies();
 
-
-        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 500, true));
-
-
         getInstrumentation().runOnMainSync(new Runnable() {
             @Override
             public void run() {
@@ -75,6 +73,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         });
 
         solo = new Solo(getInstrumentation(), getActivity());
+
 
         pushLocation(10.00001, 10.00001, 1.0f);
 
@@ -101,29 +100,38 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
     public void testMockLocation()  throws InterruptedException{
         pushLocation(10.0, 10.0, 1.0f);
-        Thread.sleep(1000);
-        assertTrue(activityUnderTest.getSuccess());
+        Thread.sleep(5000);
+        pushLocation(10.0, 10.0, 0.5f);
+        Thread.sleep(5000);
         Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(activityUnderTest.mGoogleApiClient);
         Log.i(TAG,lastLocation.toString());
 
-        assertEquals("Location Wrong", lastLocation.getLatitude(), 10.0);
-        assertEquals("Location Wrong", lastLocation.getLongitude(),10.0);
+        assertEquals("Location Wrong", 10.0,lastLocation.getLatitude());
+        assertEquals("Location Wrong", 10.0,lastLocation.getLongitude());
     }
 
     public void testPathAlarm() throws InterruptedException {
-
+        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 500, true));
         for (int i = 0; i < 30; i++){
             Log.i(TAG, String.format("Iterating over the location ... (%1$d)", i));
 
             pushLocation(52.499238 + (i * 0.0001f), 13.481788 + (i * 0.0001f), 1.0f);
-            Thread.sleep(1000);
+            Thread.sleep(5000);
 
             if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
                 break;
             }
 
         }
+        assertTrue(activityUnderTest.getSuccess());
         assertTrue(solo.waitForActivity(AlarmReceiver.class));
+    }
+
+    public void testActivityChange() {
+
+        solo.clickOnMenuItem(solo.getString(R.string.show_list));
+        solo.waitForActivity(AlarmList.class);
+        solo.assertCurrentActivity("list", AlarmList.class);
     }
 
     public void pushLocation(final double lat,final double lon, final float acc) {
