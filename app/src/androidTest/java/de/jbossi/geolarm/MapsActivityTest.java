@@ -77,11 +77,12 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         solo = new Solo(getInstrumentation(), getActivity());
 
         LocationManager lm = (LocationManager)activityUnderTest.getSystemService(Context.LOCATION_SERVICE);
-        lm.setTestProviderEnabled ("network",true);
-        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 500, true));
+        lm.setTestProviderEnabled (LocationManager.NETWORK_PROVIDER,true);
+
 
         pushLocation(10.00001, 10.00001, 1.0f);
-
+        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 500, true));
+        Log.i(TAG,"Trying to add new Geofence");
 
     }
 
