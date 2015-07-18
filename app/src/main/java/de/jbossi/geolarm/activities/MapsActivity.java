@@ -118,7 +118,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
 
     public void onConnected(Bundle connectionHint) {
-        addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 500, true));
+
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if (mLastLocation != null) {
@@ -288,8 +288,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onResult(Status status) {
         Log.i(TAG, "Geofence Intent Result came back " + status.getStatusCode());
         try {
-            Log.i(TAG, "LocationModeqwertz "+ Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.LOCATION_MODE));
+            Log.i(TAG, "Settings Location Mode Code: "+ Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.LOCATION_MODE));
         } catch (Settings.SettingNotFoundException e) {
+            Log.i(TAG, "SettingNotFoundException");
             e.printStackTrace();
         }
         if (status.getStatusCode() == 0) {
@@ -305,29 +306,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        int locationMode;
-        try {
 
-            locationMode = Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.LOCATION_MODE);
-
-            // Check if Location services in ON and if YES then make sure its in either HIGH_ACCURACY or POWER_SAVING mode (Not in GPS_ONLY)
-            switch (locationMode) {
-                case Settings.Secure.LOCATION_MODE_OFF:
-                    Log.i(TAG, "LocationModeOff qwertz ");
-                    break;
-
-                case Settings.Secure.LOCATION_MODE_SENSORS_ONLY:
-                    Log.i(TAG, "LocationModeSensorsOnly qwertz " );
-                    break;
-                default:
-                    Log.i(TAG, "Default qwertz " );
-
-
-            }
-        } catch (Settings.SettingNotFoundException e) {
-            e.printStackTrace();
-        }
-        Log.i(TAG, "GooglePlayServices Connection Failed qwertz " +connectionResult.getErrorCode());
+        Log.i(TAG, "GooglePlayServices Connection Failed: Status: " +connectionResult.getErrorCode());
         if (connectionResult.hasResolution() && !mGoogleApiClient.isConnecting()) {
             mGoogleApiClient.connect();
             Log.i(TAG, "Trying again to connect qwertz ");

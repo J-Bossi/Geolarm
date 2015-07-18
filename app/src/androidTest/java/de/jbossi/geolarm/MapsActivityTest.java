@@ -8,6 +8,7 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -75,6 +76,9 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
         solo = new Solo(getInstrumentation(), getActivity());
 
+        LocationManager lm = (LocationManager)activityUnderTest.getSystemService(Context.LOCATION_SERVICE);
+        lm.setTestProviderEnabled ("network",true);
+        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 500, true));
 
         pushLocation(10.00001, 10.00001, 1.0f);
 
@@ -144,7 +148,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         // set the CountDownLatch count to 1 and decrement this count only when we are certain that
         // mock location has been set.
         try {
-            Log.i(TAG, "LocationMode qwertz Test "+ Settings.Secure.getInt(activityUnderTest.getContentResolver(), Settings.Secure.LOCATION_MODE));
+            Log.i(TAG, "LocationMode Status is " + Settings.Secure.getInt(activityUnderTest.getContentResolver(), Settings.Secure.LOCATION_MODE));
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
         }
