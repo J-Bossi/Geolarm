@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Instrumentation;
 import android.app.ListActivity;
 import android.content.Context;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -77,7 +78,8 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         solo = new Solo(getInstrumentation(), getActivity());
 
         LocationManager lm = (LocationManager)activityUnderTest.getSystemService(Context.LOCATION_SERVICE);
-        lm.setTestProviderEnabled (LocationManager.NETWORK_PROVIDER,true);
+        lm.addTestProvider(LocationManager.NETWORK_PROVIDER, true, false, true, false, false, false, false, Criteria.POWER_MEDIUM, Criteria.ACCURACY_FINE);
+        lm.setTestProviderEnabled(LocationManager.NETWORK_PROVIDER,true);
 
 
         pushLocation(10.00001, 10.00001, 1.0f);
