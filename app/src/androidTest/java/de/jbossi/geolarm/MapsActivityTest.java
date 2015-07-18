@@ -122,8 +122,8 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
                 break;
             }
         }
-       // assertTrue(activityUnderTest.getSuccess());
-       // assertTrue(solo.waitForActivity(AlarmReceiver.class));
+        assertTrue(activityUnderTest.getSuccess());
+        assertTrue(solo.waitForActivity(AlarmReceiver.class));
     }
 
     public void testActivityChange() {

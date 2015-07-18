@@ -29,11 +29,13 @@ script:
 
 - "./gradlew build connectedCheck --stacktrace --continue -PdisablePreDex"
 
+after_script:
+  - adb logcat &
 
 deploy:
   provider: s3
   access_key_id: "AKIAI4YNVFFTK52NOR4A"
-  secret_access_key: "YZp1jPKsY38jKAp9FZqtTjdIs+q3FKSOpRAzESmMw"
+  secret_access_key: "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"
   bucket: "geolarm"
   region: eu-central-1
   endpoint: s3-eu-central-1.amazonaws.com

@@ -29,6 +29,12 @@ android {
 
 }
 
+project.gradle.taskGraph.whenReady {
+    connectedAndroidTest {
+        ignoreFailures = true
+    }
+}
+
 project.ext.preDexLibs = !project.hasProperty('disablePreDex')
 
 subprojects {
