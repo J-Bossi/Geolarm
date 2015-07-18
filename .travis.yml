@@ -25,6 +25,10 @@ before_script:
 - android-wait-for-emulator
 - adb logcat &
 - adb shell input keyevent 82 &
+- adb shell settings put secure location_providers_allow network,gps
+- adb shell input keyevent 22
+- adb shell input keyevent 23
+
 
 
 script:

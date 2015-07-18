@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Instrumentation;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -67,6 +68,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         activityUnderTest = getActivity();
         ensureGoogleApiClientConnection();
         ensureInstalledDependencies();
+        ensureNetworkIsAvailable();
 
         getInstrumentation().runOnMainSync(new Runnable() {
             @Override
@@ -82,10 +84,10 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
         }
-        LocationManager lm = (LocationManager)activityUnderTest.getSystemService(Context.LOCATION_SERVICE);
+/*        LocationManager lm = (LocationManager)activityUnderTest.getSystemService(Context.LOCATION_SERVICE);
         lm.addTestProvider(LocationManager.NETWORK_PROVIDER, false, false, false, false, false, false, false, Criteria.POWER_MEDIUM, Criteria.ACCURACY_FINE);
         lm.setTestProviderEnabled(LocationManager.NETWORK_PROVIDER, true);
-        lm.setTestProviderStatus(LocationManager.NETWORK_PROVIDER,LocationProvider.AVAILABLE,null,System.currentTimeMillis());
+        lm.setTestProviderStatus(LocationManager.NETWORK_PROVIDER,LocationProvider.AVAILABLE,null,System.currentTimeMillis());*/
 
 
         try {
@@ -96,7 +98,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         pushLocation(10.00001, 10.00001, 1.0f);
         activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 500, true));
         Log.i(TAG, "Trying to add new Geofence");
-        lm.removeTestProvider(LocationManager.NETWORK_PROVIDER);
+        //lm.removeTestProvider(LocationManager.NETWORK_PROVIDER);
 
     }
 
@@ -104,6 +106,19 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         if (!activityUnderTest.mGoogleApiClient.isConnected()) {
             activityUnderTest.mGoogleApiClient.blockingConnect();
         }
+    }
+
+    private void ensureNetworkIsAvailable() {
+        if (!isNetLocEnabled(activityUnderTest)) {
+            Log.i(TAG, "Network Provider is not available");
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            activityUnderTest.startActivity(intent);
+        }
+    }
+
+    private boolean isNetLocEnabled(Context context) {
+        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        return lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
 
@@ -136,7 +151,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
             Log.i(TAG, String.format("Iterating over the location ... (%1$d)", i));
 
             pushLocation(52.499238 + (i * 0.0001f), 13.481788 + (i * 0.0001f), 1.0f);
-            Thread.sleep(5000);
+            Thread.sleep(500);
 
             if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
                 break;
