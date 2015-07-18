@@ -31,11 +31,9 @@ script:
 
 
 deploy:
-   provider: releases
-   api_key:
-     secure: GsUyfEg9srkHLw4wJp+BaYayHSrvGUt6pehSQ5N//KoFsWeG2DFRS0i6/NteIsRmjPJ+Pye9TsgGu3TaKJCQH0YOPaQza6GBVeA+jccgfRVwapzq0SM6Op1U+OmGABJ0vFHgvsXDTLX8L2fTSCsm/zUsQXMP/LPo8gsHMEVK0gY=
-   file: file:///home/travis/build/J-Bossi/Geolarm/app/build/outputs/*
-   skip_cleanup: true
-   on:
-     tags: true
+  provider: s3
+  access_key_id: "AKIAI4YNVFFTK52NOR4A"
+  secret_access_key: "YZp1jPKsY38jKAp9FZqtTjdIs+q3FKSOpRAzESmMw"
+  bucket: "geolarm"
+  skip_cleanup: true
 
