@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -292,6 +293,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
+        int locationMode;
+        try {
+            locationMode = Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.LOCATION_MODE);
+
+            // Check if Location services in ON and if YES then make sure its in either HIGH_ACCURACY or POWER_SAVING mode (Not in GPS_ONLY)
+            switch (locationMode) {
+                case Settings.Secure.LOCATION_MODE_OFF:
+                    Log.i(TAG, "LocationModeOff qwertz ");
+                    break;
+
+                case Settings.Secure.LOCATION_MODE_SENSORS_ONLY:
+                    Log.i(TAG, "LocationModeSensorsOnly qwertz " );
+                    break;
+                default:
+                    Log.i(TAG, "Default qwertz " );
+
+
+            }
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
         Log.i(TAG, "GooglePlayServices Connection Failed qwertz " +connectionResult.getErrorCode());
         if (connectionResult.hasResolution() && !mGoogleApiClient.isConnecting()) {
             mGoogleApiClient.connect();
