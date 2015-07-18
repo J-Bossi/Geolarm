@@ -99,7 +99,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
-        addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 500, true));
+
         try {
             Log.i(TAG, "LocationMode qwertz "+ Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.LOCATION_MODE));
         } catch (Settings.SettingNotFoundException e) {
@@ -118,6 +118,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
 
     public void onConnected(Bundle connectionHint) {
+        addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 500, true));
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if (mLastLocation != null) {
