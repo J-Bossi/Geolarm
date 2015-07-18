@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -42,7 +43,7 @@ import de.jbossi.geolarm.models.Alarm;
 import de.jbossi.geolarm.services.GeofenceTransitionsIntentService;
 
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     protected static final String TAG = "main-activity";
     public GoogleApiClient mGoogleApiClient;
@@ -87,6 +88,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
 
                 .addApi(LocationServices.API)
                 .build();
@@ -286,5 +288,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public boolean getSuccess() {
         return mSuccess;
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.i(TAG, "GooglePlayServices Connection Failed qwertz " +connectionResult.getErrorCode());
+        if (connectionResult.hasResolution() && !mGoogleApiClient.isConnecting()) {
+            mGoogleApiClient.connect();
+            Log.i(TAG, "Trying again to connect qwertz ");
+        }
     }
 }

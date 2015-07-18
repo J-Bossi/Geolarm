@@ -122,8 +122,13 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
                 break;
             }
         }
-        assertTrue(activityUnderTest.getSuccess());
+
         assertTrue(solo.waitForActivity(AlarmReceiver.class));
+    }
+
+    public void testAddGeofence() {
+        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(20.0, 20.0), "3", 500, true));
+        assertTrue(activityUnderTest.getSuccess());
     }
 
     public void testActivityChange() {
@@ -145,7 +150,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
             @Override
             public void onResult(Status status) {
                 if (status.isSuccess()) {
-                    Log.v(TAG, "Mock mode set");
+
                     Location mockLocation = new Location("MockLocation");
                     mockLocation.setLatitude(lat);
                     mockLocation.setLongitude(lon);
@@ -164,7 +169,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
                                 Log.v(TAG, "Mock location set");
                                 // Decrement the count of the latch, releasing the waiting
                                 // thread. This permits lock.await() to return.
-                                Log.v(TAG, "Decrementing latch count");
+
                                 lock.countDown();
                             } else {
                                 Log.e(TAG, "Mock location not set");
@@ -179,7 +184,6 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
         try {
             // Make the current thread wait until the latch has counted down to zero.
-            Log.v(TAG, "Waiting until the latch has counted down to zero");
             lock.await(AWAIT_TIMEOUT_IN_MILLISECONDS, TimeUnit.MILLISECONDS);
         } catch (InterruptedException exception) {
             Log.i(TAG, "Waiting thread awakened prematurely", exception);
