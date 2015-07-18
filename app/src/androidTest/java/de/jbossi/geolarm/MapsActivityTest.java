@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationServices;
@@ -58,15 +60,11 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         super.setUp();
         activityUnderTest = getActivity();
         ensureGoogleApiClientConnection();
+        ensureInstalledDependencies();
 
-        Log.i(TAG, "Setup MOCK Location Providers");
-        //Set test location
-        pushLocation(-12.34, 23.45, 1.0f);
 
-       //locMgr = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 2000, true));
+        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 500, true));
 
-        Log.i(TAG, "Requested Location Update");
 
         getInstrumentation().runOnMainSync(new Runnable() {
             @Override
@@ -76,9 +74,8 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         });
 
         solo = new Solo(getInstrumentation(), getActivity());
-        Log.i(TAG, "Wait for activity");
-        solo.waitForActivity("MapsActivity");
-        Log.i(TAG, "Has Activity");
+
+        pushLocation(10.00001, 10.00001, 1.0f);
 
 
     }
@@ -95,12 +92,33 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         assertEquals(true, activityUnderTest.mGoogleApiClient.isConnected());
     }
 
+    public void ensureInstalledDependencies() {
+        int result = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(activityUnderTest);
+        assertEquals(result, ConnectionResult.SUCCESS);
+    }
+
+    public void  testLocationAvailability() {
+        assertTrue(LocationServices.FusedLocationApi.getLocationAvailability(activityUnderTest.mGoogleApiClient).isLocationAvailable());
+    }
+
+    public void testMockLocation()  throws InterruptedException{
+        pushLocation(10.0, 10.0, 1.0f);
+        Thread.sleep(1000);
+        Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(activityUnderTest.mGoogleApiClient);
+        Log.i(TAG,lastLocation.toString());
+
+        assertEquals("Location Wrong", lastLocation.getLatitude(), 10.0);
+        assertEquals("Location Wrong", lastLocation.getLongitude(),10.0);
+    }
+
     public void testPathAlarm() throws InterruptedException {
 
         for (int i = 0; i < 30; i++){
             Log.i(TAG, String.format("Iterating over the location ... (%1$d)", i));
+
             pushLocation(52.499238 + (i * 0.0001f), 13.481788 + (i * 0.0001f), 1.0f);
             Thread.sleep(1000);
+
             if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
                 break;
             }
