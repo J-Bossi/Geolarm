@@ -17,5 +17,6 @@
     <string name="add_alarm">Alarm hinzufügen</string>
     <string name="settings">Einstellungen</string>
     <string name="shutdown_alarm">Alarm ausschalten</string>
+    <string name="show_list">Liste anzeigen</string>
 
 </resources>
