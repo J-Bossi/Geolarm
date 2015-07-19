@@ -24,8 +24,13 @@ before_install:
 #- ./wait_for_emulator.sh
 - android-wait-for-emulator
 - sleep 30
-- adb logcat &
+- adb shell settings put secure location_providers_allowed network,gps,wifi &
+- sleep 30
 - adb shell input keyevent 82 &
+- sleep 30
+- adb shell input keyevent 22 &
+- sleep 30
+- adb shell input keyevent 23 &
 - sleep 30
 
 before_script:
@@ -35,12 +40,8 @@ before_script:
 
 
 script:
-- adb shell settings put secure location_provider_allowed network,gps,wifi &
-- sleep 30
-- adb shell input keyevent 22 &
-- sleep 30
-- adb shell input keyevent 23 &
-- sleep 30
+
+
 
 - "./gradlew build connectedCheck --stacktrace --continue -PdisablePreDex"
 
