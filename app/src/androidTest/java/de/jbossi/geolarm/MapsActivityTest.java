@@ -68,7 +68,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         activityUnderTest = getActivity();
         ensureGoogleApiClientConnection();
         ensureInstalledDependencies();
-        ensureNetworkIsAvailable();
+        //ensureNetworkIsAvailable();
 
         getInstrumentation().runOnMainSync(new Runnable() {
             @Override
@@ -80,7 +80,8 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         solo = new Solo(getInstrumentation(), getActivity());
 
         try {
-            Log.i(TAG, "LocationMode Status is " + Settings.Secure.getInt(activityUnderTest.getContentResolver(), Settings.Secure.LOCATION_MODE));
+            //
+            assertEquals(3, Settings.Secure.getInt(activityUnderTest.getContentResolver(), Settings.Secure.LOCATION_MODE));
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
         }

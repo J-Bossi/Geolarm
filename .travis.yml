@@ -35,12 +35,15 @@ before_script:
 
 
 script:
-
+- adb shell settings put secure location_provider_allowed network,gps,wifi
+- sleep 30
+- adb shell input keyevent 22
+- sleep 30
+- adb shell input keyevent 23
+- sleep 30
 
 - "./gradlew build connectedCheck --stacktrace --continue -PdisablePreDex"
-- adb shell settings put secure location_provider_allowed network,gps,wifi
-- adb shell input keyevent 22
-- adb shell input keyevent 23
+
 
 after_script:
 #deploy:
