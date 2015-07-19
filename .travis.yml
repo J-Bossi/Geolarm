@@ -30,6 +30,8 @@ before_install:
 - sleep 30
 - adb shell input keyevent 22 &
 - sleep 30
+- adb shell input keyevent 22 &
+- sleep 30
 - adb shell input keyevent 23 &
 - sleep 30
 
