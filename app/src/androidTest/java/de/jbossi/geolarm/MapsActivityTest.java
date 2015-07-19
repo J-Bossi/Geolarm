@@ -79,7 +79,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
         solo = new Solo(getInstrumentation(), getActivity());
 
-        try {
+/*        try {
             //
             assertEquals(3, Settings.Secure.getInt(activityUnderTest.getContentResolver(), Settings.Secure.LOCATION_MODE));
         } catch (Settings.SettingNotFoundException e) {
