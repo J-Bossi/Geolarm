@@ -21,7 +21,8 @@ before_install:
   --abi google_apis/armeabi-v7a
 - emulator -avd test -no-skin -no-audio -no-window &
 - chmod +x wait_for_emulator.sh
-- ./wait_for_emulator.sh
+#- ./wait_for_emulator.sh
+- adb wait-for-device
 - sleep 30
 - adb logcat &
 - adb shell input keyevent 82 &
