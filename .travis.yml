@@ -23,16 +23,16 @@ before_install:
 - chmod +x wait_for_emulator.sh
 #- ./wait_for_emulator.sh
 - android-wait-for-emulator
-- sleep 10
+- sleep 30
 #- adb logcat &
 - adb shell settings put secure location_providers_allowed gps,network &
-
+- sleep 60
 - adb shell input keyevent 82 &
-
+- sleep 10
 - adb shell input keyevent 22 &
-
+- sleep 10
 - adb shell input keyevent 22 &
-
+- sleep 10
 - adb shell input keyevent 23 &
 
 
