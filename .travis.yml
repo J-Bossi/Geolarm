@@ -25,13 +25,14 @@ before_install:
 before_script:
 
 - adb logcat &
-- adb shell input keyevent 82 &
+- adb shell input keyevent 82
+- adb shell settings put secure location_providers_allowed network,gps
+- adb shell input keyevent 22
+- adb shell input keyevent 23
 
 
 script:
-- adb shell settings put secure location_providers_allowed network,gps &
-- adb shell input keyevent 22 &
-- adb shell input keyevent 23 &
+
 
 - "./gradlew build connectedCheck --stacktrace --continue -PdisablePreDex"
 
