@@ -163,10 +163,6 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         assertTrue(solo.waitForActivity(AlarmReceiver.class));
     }
 
-    public void testAddGeofence() {
-        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(20.0, 20.0), "3", 500, true));
-        assertTrue(activityUnderTest.getSuccess());
-    }
 
     public void testActivityChange() {
 

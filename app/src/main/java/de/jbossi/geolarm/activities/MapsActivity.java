@@ -300,9 +300,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public boolean getSuccess() {
-        return mSuccess;
-    }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
