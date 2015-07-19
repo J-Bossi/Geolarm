@@ -25,10 +25,10 @@ before_install:
 - android-wait-for-emulator
 - sleep 30
 - adb logcat &
+- adb shell settings put secure location_providers_allowed network,gps,wifi &
+- sleep 60
 - adb shell input keyevent 82 &
 - sleep 30
-- adb shell settings put secure location_providers_allowed network &
-- sleep 60
 - adb shell input keyevent 22 &
 - sleep 10
 - adb shell input keyevent 22 &
