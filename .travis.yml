@@ -39,7 +39,7 @@ before_install:
 
 script:
 
-- "./gradlew build connectedCheck --stacktrace --continue -PdisablePreDex"
+- "./gradlew build connectedCheck"
 
 
 after_script:
