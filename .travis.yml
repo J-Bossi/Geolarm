@@ -38,12 +38,13 @@ before_install:
 script:
 - "./gradlew build connectedCheck --stacktrace --continue -PdisablePreDex"
 
+after_script:
 
 deploy:
   provider: s3
   access_key_id: "AKIAIK37DE6IWDJBWQBQ"
   secret_access_key:
-    secure: "o9g7rvrHYV14Xv6gv6u6KbkKWdjRYdFOa2oNUMeKvix6U95uj3HCUDzJrTnNEs0t0+jLzLVcFaex4SvEaod2Letag3MRPuFBwrsY0ZyRNFVumqQyEzrHbYKTNhnJLi7psBrxl4SqZjjqwI3RL1jyeQsY6Onl8sHvoduaYsHu7ik="
+    secure: "LfRO8TO0RDLWZFVOm187M8J2wrgIOf+tD6cUljgwBCVDLnTyCRNfFpq5c/14t24BX4OEudK4dFGQ0qv6by3sj0doM0fkObKMob7Cm5l8aH3va5pMANAkjESHKvtNTbGJsKTp7eg/t40i/5sFiYgH+pGWBm78ZVK+cNOWzeaYH7M="
   bucket: "geolarm"
   region: eu-central-1
   endpoint: s3-eu-central-1.amazonaws.com
