@@ -24,7 +24,7 @@ before_install:
 #- ./wait_for_emulator.sh
 - android-wait-for-emulator
 - sleep 30
-#- adb logcat &
+- adb logcat &
 - adb shell settings put secure location_providers_allowed gps,network &
 - sleep 60
 - adb shell input keyevent 82 &
@@ -35,21 +35,18 @@ before_install:
 - sleep 10
 - adb shell input keyevent 23 &
 
-
-
 script:
+- "./gradlew build connectedCheck --stacktrace --continue -PdisablePreDex"
 
-- "./gradlew build connectedCheck"
 
-
-after_script:
-#deploy:
-#  provider: s3
-#  access_key_id: "AKIAI4YNVFFTK52NOR4A"
-#  secret_access_key: "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"
-#  bucket: "geolarm"
-#  region: eu-central-1
-#  endpoint: s3-eu-central-1.amazonaws.com
-#  file: file:///home/travis/build/J-Bossi/Geolarm/app/build/outputs/*
-#  skip_cleanup: true
+deploy:
+  provider: s3
+  access_key_id: "AKIAIK37DE6IWDJBWQBQ"
+  secret_access_key:
+    secure: "o9g7rvrHYV14Xv6gv6u6KbkKWdjRYdFOa2oNUMeKvix6U95uj3HCUDzJrTnNEs0t0+jLzLVcFaex4SvEaod2Letag3MRPuFBwrsY0ZyRNFVumqQyEzrHbYKTNhnJLi7psBrxl4SqZjjqwI3RL1jyeQsY6Onl8sHvoduaYsHu7ik="
+  bucket: "geolarm"
+  region: eu-central-1
+  endpoint: s3-eu-central-1.amazonaws.com
+  local_dir: ///home/travis/build/J-Bossi/Geolarm/app/build/outputs/
+  skip_cleanup: true
 
