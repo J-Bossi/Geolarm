@@ -1,37 +1,25 @@
 package de.jbossi.geolarm;
 
 
-import android.app.Activity;
-import android.app.Instrumentation;
-import android.app.ListActivity;
 import android.content.Context;
-import android.content.Intent;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.SystemClock;
-import android.provider.Settings;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.view.WindowManager;
-import android.widget.ImageButton;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.robotium.solo.Solo;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 
 import de.jbossi.geolarm.activities.AlarmList;
 import de.jbossi.geolarm.activities.AlarmReceiver;
@@ -56,7 +44,6 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
         solo.finishOpenedActivities();
 
-
         activityUnderTest = null;
         Log.i(TAG, "Finish Test");
         super.tearDown();
@@ -68,40 +55,15 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         activityUnderTest = getActivity();
         ensureGoogleApiClientConnection();
         ensureInstalledDependencies();
-        //ensureNetworkIsAvailable();
-
+        ensureNetworkIsAvailable();
         getInstrumentation().runOnMainSync(new Runnable() {
-            @Override
             public void run() {
                 getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
             }
         });
-
         solo = new Solo(getInstrumentation(), getActivity());
 
-/*        try {
-            //
-            assertEquals(3, Settings.Secure.getInt(activityUnderTest.getContentResolver(), Settings.Secure.LOCATION_MODE));
-        } catch (Settings.SettingNotFoundException e) {
-            e.printStackTrace();
-        }
-/*        LocationManager lm = (LocationManager)activityUnderTest.getSystemService(Context.LOCATION_SERVICE);
-        lm.addTestProvider(LocationManager.NETWORK_PROVIDER, false, false, false, false, false, false, false, Criteria.POWER_MEDIUM, Criteria.ACCURACY_FINE);
-        lm.setTestProviderEnabled(LocationManager.NETWORK_PROVIDER, true);
-        lm.setTestProviderStatus(LocationManager.NETWORK_PROVIDER,LocationProvider.AVAILABLE,null,System.currentTimeMillis());*/
-
-
-        try {
-            Log.i(TAG, "LocationMode Status is " + Settings.Secure.getInt(activityUnderTest.getContentResolver(), Settings.Secure.LOCATION_MODE));
-        } catch (Settings.SettingNotFoundException e) {
-            e.printStackTrace();
-        }
-        pushLocation(10.00001, 10.00001, 1.0f);
-        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 500, true));
-        Log.i(TAG, "Trying to add new Geofence");
         assertTrue(solo.waitForActivity(MapsActivity.class));
-        //lm.removeTestProvider(LocationManager.NETWORK_PROVIDER);
-
     }
 
     private void ensureGoogleApiClientConnection() {
@@ -111,22 +73,8 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
     }
 
     private void ensureNetworkIsAvailable() {
-        if (!isNetLocEnabled(activityUnderTest)) {
-            Log.i(TAG, "Network Provider is not available");
-            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            activityUnderTest.startActivity(intent);
-        }
-    }
-
-    private boolean isNetLocEnabled(Context context) {
-        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        return lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-    }
-
-
-
-    public void testIsConncted() {
-        assertEquals(true, activityUnderTest.mGoogleApiClient.isConnected());
+        LocationManager lm = (LocationManager) activityUnderTest.getSystemService(Context.LOCATION_SERVICE);
+        assertTrue(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER));
     }
 
     public void ensureInstalledDependencies() {
@@ -147,13 +95,14 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         assertEquals("Location Wrong", 10.0,lastLocation.getLongitude());
     }
 
-    public void testPathAlarm() throws InterruptedException {
-        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.502238, 13.484788), "1", 500, true));
+
+    public void testEndInFence() throws InterruptedException {
+        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.50224, 13.48479), "1", 50, true));
         for (int i = 0; i < 30; i++){
             Log.i(TAG, String.format("Iterating over the location ... (%1$d)", i));
 
             pushLocation(52.499238 + (i * 0.0001f), 13.481788 + (i * 0.0001f), 1.0f);
-            Thread.sleep(500);
+            // Thread.sleep(750);
 
             if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
                 break;
@@ -161,6 +110,99 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         }
 
         assertTrue(solo.waitForActivity(AlarmReceiver.class));
+    }
+
+    public void testMissingBeeline() throws InterruptedException {
+
+        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
+        //100m n , 13.526000
+        while (true) {
+            pushLocation(52.45750, 13.52400, 1.0f);
+            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+                break;
+            }
+            pushLocation(52.45750, 13.52450, 1.0f);
+            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+                break;
+            }
+            pushLocation(52.45750, 13.52500, 1.0f);
+            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+                break;
+            }
+            pushLocation(52.45750, 13.52550, 1.0f);
+            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+                break;
+            }
+            pushLocation(52.45750, 13.52600, 1.0f);
+            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+                break;
+            }
+            pushLocation(52.45750, 13.52650, 1.0f);
+            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+                break;
+            }
+            pushLocation(52.45750, 13.52700, 1.0f);
+            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+                break;
+            }
+            pushLocation(52.45750, 13.52750, 1.0f);
+            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+                break;
+            }
+            pushLocation(52.45750, 13.52800, 1.0f);
+            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+                break;
+            }
+        }
+
+        assertTrue(solo.waitForActivity(AlarmReceiver.class));
+
+
+    }
+
+    //HTW Ziel
+    //52.457000, 13.52600
+
+
+    public void testEnteringBeeline() throws InterruptedException {
+        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
+        pushLocation(52.45750, 13.52400, 1.0f);
+        pushLocation(52.45750, 13.52450, 1.0f);
+        pushLocation(52.45750, 13.52500, 1.0f);
+        pushLocation(52.45750, 13.52700, 1.0f);
+        pushLocation(52.45750, 13.52750, 1.0f);
+        pushLocation(52.45750, 13.52800, 1.0f);
+        //100m n 52.457000, 13.526000
+        if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+            fail();
+        }
+
+    }
+
+    public void testUncertainLocations() throws InterruptedException {
+        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
+        pushLocation(52.45750, 13.52400, 100.0f);
+
+        pushLocation(52.45750, 13.52450, 100.0f);
+
+        pushLocation(52.45750, 13.52500, 100.0f);
+
+        pushLocation(52.45750, 13.52550, 100.0f);
+
+        pushLocation(52.45750, 13.52600, 100.0f);
+
+        pushLocation(52.45750, 13.52650, 100.0f);
+
+        pushLocation(52.45750, 13.52700, 100.0f);
+
+        pushLocation(52.45750, 13.52750, 100.0f);
+
+        pushLocation(52.45750, 13.52800, 100.0f);
+
+        if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+            fail();
+        }
+
     }
 
 
@@ -204,7 +246,11 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
                                 Log.v(TAG, "Mock location set");
                                 // Decrement the count of the latch, releasing the waiting
                                 // thread. This permits lock.await() to return.
-
+                                try {
+                                    Thread.sleep(750);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                                 lock.countDown();
                             } else {
                                 Log.e(TAG, "Mock location not set");
