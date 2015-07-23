@@ -102,7 +102,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
             Log.i(TAG, String.format("Iterating over the location ... (%1$d)", i));
 
             pushLocation(52.499238 + (i * 0.0001f), 13.481788 + (i * 0.0001f), 1.0f);
-            // Thread.sleep(750);
+            Thread.sleep(750);
 
             if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
                 break;
@@ -112,44 +112,53 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         assertTrue(solo.waitForActivity(AlarmReceiver.class));
     }
 
-    public void testMissingBeeline() throws InterruptedException {
+    public void testEnteringBeeline() throws InterruptedException {
 
         activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
         //100m n , 13.526000
         while (true) {
             pushLocation(52.45750, 13.52400, 1.0f);
+            Thread.sleep(750);
             if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
                 break;
             }
             pushLocation(52.45750, 13.52450, 1.0f);
+            Thread.sleep(750);
             if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
                 break;
             }
             pushLocation(52.45750, 13.52500, 1.0f);
+            Thread.sleep(750);
             if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
                 break;
             }
             pushLocation(52.45750, 13.52550, 1.0f);
+            Thread.sleep(750);
             if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
                 break;
             }
             pushLocation(52.45750, 13.52600, 1.0f);
+            Thread.sleep(750);
             if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
                 break;
             }
             pushLocation(52.45750, 13.52650, 1.0f);
+            Thread.sleep(750);
             if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
                 break;
             }
             pushLocation(52.45750, 13.52700, 1.0f);
+            Thread.sleep(750);
             if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
                 break;
             }
             pushLocation(52.45750, 13.52750, 1.0f);
+            Thread.sleep(750);
             if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
                 break;
             }
             pushLocation(52.45750, 13.52800, 1.0f);
+            Thread.sleep(750);
             if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
                 break;
             }
@@ -164,14 +173,20 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
     //52.457000, 13.52600
 
 
-    public void testEnteringBeeline() throws InterruptedException {
+    public void testMissingBeeline() throws InterruptedException {
         activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
         pushLocation(52.45750, 13.52400, 1.0f);
+        Thread.sleep(750);
         pushLocation(52.45750, 13.52450, 1.0f);
+        Thread.sleep(750);
         pushLocation(52.45750, 13.52500, 1.0f);
+        Thread.sleep(750);
         pushLocation(52.45750, 13.52700, 1.0f);
+        Thread.sleep(750);
         pushLocation(52.45750, 13.52750, 1.0f);
+        Thread.sleep(750);
         pushLocation(52.45750, 13.52800, 1.0f);
+        Thread.sleep(750);
         //100m n 52.457000, 13.526000
         if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
             fail();
@@ -182,23 +197,24 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
     public void testUncertainLocations() throws InterruptedException {
         activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
         pushLocation(52.45750, 13.52400, 100.0f);
-
+        Thread.sleep(750);
         pushLocation(52.45750, 13.52450, 100.0f);
-
+        Thread.sleep(750);
         pushLocation(52.45750, 13.52500, 100.0f);
+        Thread.sleep(750);
 
         pushLocation(52.45750, 13.52550, 100.0f);
-
+        Thread.sleep(750);
         pushLocation(52.45750, 13.52600, 100.0f);
-
+        Thread.sleep(750);
         pushLocation(52.45750, 13.52650, 100.0f);
-
+        Thread.sleep(750);
         pushLocation(52.45750, 13.52700, 100.0f);
-
+        Thread.sleep(750);
         pushLocation(52.45750, 13.52750, 100.0f);
-
+        Thread.sleep(750);
         pushLocation(52.45750, 13.52800, 100.0f);
-
+        Thread.sleep(750);
         if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
             fail();
         }
@@ -246,11 +262,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
                                 Log.v(TAG, "Mock location set");
                                 // Decrement the count of the latch, releasing the waiting
                                 // thread. This permits lock.await() to return.
-                                try {
-                                    Thread.sleep(750);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
+
                                 lock.countDown();
                             } else {
                                 Log.e(TAG, "Mock location not set");
