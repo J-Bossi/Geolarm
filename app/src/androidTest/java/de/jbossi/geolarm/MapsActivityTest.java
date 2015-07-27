@@ -43,7 +43,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
     protected void tearDown() throws Exception {
 
         solo.finishOpenedActivities();
-
+        activityUnderTest.removeAllAlarms();
         activityUnderTest = null;
         Log.i(TAG, "Finish Test");
         super.tearDown();
@@ -95,13 +95,13 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         assertEquals("Location Wrong", 10.0,lastLocation.getLongitude());
     }
 
-
+    //positive
     public void testEndInFence() throws InterruptedException {
-        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.50224, 13.48479), "1", 100, true));
+        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
         for (int i = 0; i < 30; i++){
             Log.i(TAG, String.format("Iterating over the location ... (%1$d)", i));
 
-            pushLocation(52.499238 + (i * 0.0001f), 13.481788 + (i * 0.0001f), 1.0f);
+            pushLocation(52.45400 + (i * 0.0001f), 13.52300 + (i * 0.0001f), 1.0f);
             Thread.sleep(750);
 
             if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
@@ -112,6 +112,24 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         assertTrue(solo.waitForActivity(AlarmReceiver.class));
     }
 
+    //positive
+    public void testStartInFence() throws InterruptedException {
+        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
+        for (int i = 0; i < 30; i++) {
+            Log.i(TAG, String.format("Iterating over the location ... (%1$d)", i));
+
+            pushLocation(52.45700 + (i * 0.0001f), 13.52600 + (i * 0.0001f), 1.0f);
+            Thread.sleep(750);
+
+            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+                break;
+            }
+        }
+
+        assertTrue(solo.waitForActivity(AlarmReceiver.class));
+    }
+
+    //positive
     public void testEnteringBeeline() throws InterruptedException {
 
         activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
@@ -169,10 +187,8 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
     }
 
-    //HTW Ziel
-    //52.457000, 13.52600
 
-
+    //negative
     public void testMissingBeeline() throws InterruptedException {
         activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
         pushLocation(52.45750, 13.52400, 1.0f);
@@ -202,7 +218,6 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         Thread.sleep(750);
         pushLocation(52.45750, 13.52500, 100.0f);
         Thread.sleep(750);
-
         pushLocation(52.45750, 13.52550, 100.0f);
         Thread.sleep(750);
         pushLocation(52.45750, 13.52600, 100.0f);
@@ -219,6 +234,21 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
             fail();
         }
 
+    }
+
+    public void testFastSpeed() throws InterruptedException {
+        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
+        for (int i = 0; i < 30; i++) {
+            Log.i(TAG, String.format("Iterating over the location ... (%1$d)", i));
+
+            pushLocation(52.45400 + (i * 0.0002f), 13.52300 + (i * 0.0002f), 1.0f);
+            Thread.sleep(50);
+
+            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+                break;
+            }
+        }
+        assertTrue(solo.waitForActivity(AlarmReceiver.class));
     }
 
 

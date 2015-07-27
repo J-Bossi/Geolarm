@@ -26,7 +26,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
@@ -110,7 +109,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onStop() {
         super.onStop();
-        mGoogleApiClient.disconnect();
+        //mGoogleApiClient.disconnect();
     }
 
     /**
@@ -206,6 +205,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 getGeofencingRequest(geofence),
                 getGeofencePendingIntent()
         ).setResultCallback(this);
+    }
+
+    public void removeAlarm(String alarmId) {
+        //Todo: Remove Geofences
+        AlarmRepository.getInstance(getApplicationContext()).removeAlarm(alarmId);
+    }
+
+    public void removeAllAlarms() {
+        AlarmRepository.getInstance(getApplicationContext()).removeAlarms();
+        LocationServices.GeofencingApi.removeGeofences(mGoogleApiClient, getGeofencePendingIntent());
     }
 
     public void startPlacePicker(LatLng latLng) {

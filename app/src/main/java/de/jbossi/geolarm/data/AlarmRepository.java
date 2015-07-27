@@ -101,5 +101,17 @@ public class AlarmRepository {
         SaveObjectsToFile(mAlarms);
     }
 
+    public void removeAlarm(String alarmId) {
+        for (Alarm alarm : mAlarms) {
+            if (alarm.getId() == alarmId) {
+                mAlarms.remove(alarm);
+            }
+        }
+    }
+
+    public void removeAlarms() {
+        mAlarms.clear();
+    }
+
 
 }
