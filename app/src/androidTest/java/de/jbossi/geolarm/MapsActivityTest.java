@@ -248,7 +248,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
             Log.i(TAG, String.format("Iterating over the location ... (%1$d)", i));
 
             pushLocation(52.45400 + (i * 0.0002f), 13.52300 + (i * 0.0002f), 1.0f);
-            Thread.sleep(400);
+            Thread.sleep(10);
 
             if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
                 break;
