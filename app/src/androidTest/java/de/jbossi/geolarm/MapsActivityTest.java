@@ -242,8 +242,8 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
     //positive
     public void testFastSpeed() throws InterruptedException {
         activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
-        pushLocation(52.45400, 13.52300, 1.0f);
-        Thread.sleep(10000);
+
+
         for (int i = 0; i < 30; i++) {
             Log.i(TAG, String.format("Iterating over the location ... (%1$d)", i));
 
@@ -259,15 +259,9 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
 
     public void pushLocation(final double lat,final double lon, final float acc) {
-        // We use a CountDownLatch to ensure that all asynchronous tasks complete within setUp. We
-        // set the CountDownLatch count to 1 and decrement this count only when we are certain that
-        // mock location has been set.
-
 
         final CountDownLatch lock = new CountDownLatch(1);
 
-        // First, ensure that the location provider is in mock mode. Using setMockMode() ensures
-        // that only locations specified in setMockLocation(GoogleApiClient, Location) are used.
         LocationServices.FusedLocationApi.setMockMode(activityUnderTest.mGoogleApiClient, true).setResultCallback(new ResultCallback<Status>() {
             @Override
             public void onResult(Status status) {
@@ -289,8 +283,6 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
                         public void onResult(Status status) {
                             if (status.isSuccess()) {
                                 Log.v(TAG, "Mock location set");
-                                // Decrement the count of the latch, releasing the waiting
-                                // thread. This permits lock.await() to return.
 
                                 lock.countDown();
                             } else {
