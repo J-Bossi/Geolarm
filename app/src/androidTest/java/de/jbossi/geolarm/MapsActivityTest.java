@@ -21,7 +21,6 @@ import com.robotium.solo.Solo;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import de.jbossi.geolarm.activities.AlarmList;
 import de.jbossi.geolarm.activities.AlarmReceiver;
 import de.jbossi.geolarm.activities.MapsActivity;
 import de.jbossi.geolarm.models.Alarm;
@@ -83,7 +82,8 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
     }
 
 
-    public void testMockLocation()  throws InterruptedException{
+/*    public void testMockLocation()  throws InterruptedException{
+        Thread.sleep(1000);
         pushLocation(10.0, 10.0, 1.0f);
         Thread.sleep(5000);
         pushLocation(10.0, 10.0, 0.5f);
@@ -94,6 +94,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         assertEquals("Location Wrong", 10.0,lastLocation.getLatitude());
         assertEquals("Location Wrong", 10.0,lastLocation.getLongitude());
     }
+        */
 
     //positive
     public void testEndInFence() throws InterruptedException {
@@ -251,13 +252,6 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         assertTrue(solo.waitForActivity(AlarmReceiver.class));
     }
 
-
-    public void testActivityChange() {
-
-        solo.clickOnMenuItem(solo.getString(R.string.show_list));
-        solo.waitForActivity(AlarmList.class);
-        solo.assertCurrentActivity("list", AlarmList.class);
-    }
 
     public void pushLocation(final double lat,final double lon, final float acc) {
         // We use a CountDownLatch to ensure that all asynchronous tasks complete within setUp. We
