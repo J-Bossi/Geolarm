@@ -204,13 +204,13 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         Thread.sleep(750);
         pushLocation(52.45750, 13.52800, 1.0f);
         Thread.sleep(750);
-        //100m n 52.457000, 13.526000
         if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
             fail();
         }
 
     }
 
+    //negative
     public void testUncertainLocations() throws InterruptedException {
         activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
         pushLocation(52.45750, 13.52400, 100.0f);
@@ -237,6 +237,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
     }
 
+    //positive
     public void testFastSpeed() throws InterruptedException {
         activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
         for (int i = 0; i < 30; i++) {
