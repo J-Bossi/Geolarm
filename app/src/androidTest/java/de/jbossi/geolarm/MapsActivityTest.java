@@ -44,6 +44,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         solo.finishOpenedActivities();
         activityUnderTest.removeAllAlarms();
         activityUnderTest = null;
+        Thread.sleep(10000);
         Log.i(TAG, "Finish Test");
         super.tearDown();
     }
@@ -63,6 +64,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         solo = new Solo(getInstrumentation(), getActivity());
 
         assertTrue(solo.waitForActivity(MapsActivity.class));
+        Thread.sleep(10000);
     }
 
     private void ensureGoogleApiClientConnection() {
