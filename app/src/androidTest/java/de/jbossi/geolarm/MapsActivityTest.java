@@ -240,11 +240,13 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
     //positive
     public void testFastSpeed() throws InterruptedException {
         activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
+        pushLocation(52.45400, 13.52300, 1.0f);
+        Thread.sleep(10000);
         for (int i = 0; i < 30; i++) {
             Log.i(TAG, String.format("Iterating over the location ... (%1$d)", i));
 
             pushLocation(52.45400 + (i * 0.0002f), 13.52300 + (i * 0.0002f), 1.0f);
-            Thread.sleep(50);
+            Thread.sleep(400);
 
             if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
                 break;
