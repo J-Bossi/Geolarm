@@ -53,6 +53,7 @@ public class AlarmReceiver extends FragmentActivity {
 
     private void shutdownAlarm() {
         mMediaPlayer.stop();
+        finish();
     }
 
     //Get an alarm sound. Try for an alarm. If none set, try notification,

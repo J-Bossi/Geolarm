@@ -1,20 +1,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
     android:orientation="vertical">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="@string/choose_alarm_distance"
         android:textColor="@color/accent_material_dark" />
 
-    <EditText
-        android:layout_width="fill_parent"
+    <com.rey.material.widget.Slider
+        style="@style/Material.Widget.Slider.Discrete"
+        android:id="@+id/setAlarmDialog_Distance"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/locationText"
-        android:layout_marginTop="20dp"
-        android:inputType="textPostalAddress" />
+        android:gravity="center"
+        app:sl_minValue="10"
+        app:sl_stepValue="10"
+        app:sl_maxValue="1000"
+        app:sl_value="50" />
+
+
+    <TextView
+        android:id="@+id/setAlarmDialog_Location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp" />
 
 </LinearLayout>

@@ -13,11 +13,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -35,6 +34,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.rey.material.app.Dialog;
+import com.rey.material.widget.Slider;
 
 import de.jbossi.geolarm.R;
 import de.jbossi.geolarm.Util;
@@ -50,9 +51,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     int REQUEST_PLACE_PICKER = 1;
     private MapFragment mMap; // Might be null if Google Play services APK is not available.
     private ImageButton mFloatingActionButton;
-    private EditText editLocation;
+    private TextView editLocation;
     private Place place;
-    private float distance;
+    private float mDistance;
     private Location mLastLocation;
     private boolean mSuccess = false;
     private GoogleMap.OnMapLongClickListener onMapLongClickListener = new GoogleMap.OnMapLongClickListener() {
@@ -76,7 +77,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 showSetAlarmDialog();
             }
         });
-        distance = 100;
+
         // Kick off the request to build GoogleApiClient.
         buildGoogleApiClient();
 
@@ -170,25 +171,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void showSetAlarmDialog() {
 
-        MaterialDialog setUpDialog = new MaterialDialog.Builder(this).title("Alarm wählen!")
-                .customView(R.layout.set_alarm_dialog, true)
-                .positiveText(R.string.ok).negativeText(R.string.cancel)
-                .positiveColor(R.color.primary_dark).callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        addAlarm(new Alarm(place.getName(), place.getLatLng(), place.getId(), distance, true));
+
+        Dialog setUpDialog = new Dialog(this);
+        setUpDialog.title("Alarm wählen!")
+                .contentView(R.layout.set_alarm_dialog)
+                .positiveAction(R.string.ok).negativeAction(R.string.cancel).show();
+
+        Slider slider = (Slider) setUpDialog.findViewById(R.id.setAlarmDialog_Distance);
+
+        mDistance = slider.getPosition();
 
 
-                    }
+        setUpDialog.positiveActionClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addAlarm(new Alarm(place.getName(), place.getLatLng(), place.getId(), mDistance, true));
+            }
+        });
 
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                    }
-                })
-                .build();
 
-
-        editLocation = (EditText) setUpDialog.getCustomView().findViewById(R.id.locationText);
+        editLocation = (TextView) setUpDialog.findViewById(R.id.setAlarmDialog_Location);
         if (place != null) {
             editLocation.setText(place.getName());
         }

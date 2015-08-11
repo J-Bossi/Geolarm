@@ -3,7 +3,7 @@
 
     <string name="app_name">Geolarm</string>
     <string name="title_activity_maps">Map</string>
-    <string name="choose_alarm_distance">Entfernung beträgt 1 km</string>
+    <string name="choose_alarm_distance">Entfernung</string>
     <string name="ok">OK</string>
     <string name="cancel">Abbrechen</string>
     <string name="newAlarm">Neuer Alarm</string>
