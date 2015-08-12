@@ -172,7 +172,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void showSetAlarmDialog() {
 
 
-        Dialog setUpDialog = new Dialog(this);
+        final Dialog setUpDialog = new Dialog(this);
         setUpDialog.title("Alarm wählen!")
                 .contentView(R.layout.set_alarm_dialog)
                 .positiveAction(R.string.ok).negativeAction(R.string.cancel).show();
@@ -183,9 +183,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         setUpDialog.positiveActionClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 addAlarm(new Alarm(place.getName(), place.getLatLng(), place.getId(), mDistance, true));
+                setUpDialog.cancel();
+            }
+        });
+
+        setUpDialog.negativeActionClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                setUpDialog.cancel();
             }
         });
 
@@ -271,8 +277,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         alarm.getDistance()//Distance in meters
                 )
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
-                        Geofence.GEOFENCE_TRANSITION_EXIT)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
                 .build();
 
 

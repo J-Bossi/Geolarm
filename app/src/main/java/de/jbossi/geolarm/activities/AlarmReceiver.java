@@ -47,7 +47,8 @@ public class AlarmReceiver extends FragmentActivity {
                 mMediaPlayer.start();
             }
         } catch (IOException e) {
-            System.out.println("OOPS");
+            //TODO Exception Handling
+
         }
     }
 

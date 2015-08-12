@@ -1,9 +1,9 @@
 package de.jbossi.geolarm.activities;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ListView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 import java.util.List;
 
@@ -16,32 +16,30 @@ import de.jbossi.geolarm.models.Alarm;
 /**
  * Created by Johannes on 19.06.2015.
  */
-public class AlarmList extends ListActivity {
+public class AlarmList extends Activity {
+    private RecyclerView mAlarmListRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
-    private ListView mAlarmListView;
+
     private List<Alarm> mAlarms;
 
 
     public AlarmList() {
         super();
-
-
     }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_list);
+        mAlarmListRecyclerView = (RecyclerView) findViewById(R.id.alarm_list);
+
+        mLayoutManager = new LinearLayoutManager(this);
+        mAlarmListRecyclerView.setLayoutManager(mLayoutManager);
 
         mAlarms = AlarmRepository.getInstance(this).getmAlarms();
-        setContentView(R.layout.activity_list);
-        setListAdapter(new AlarmAdapter(mAlarms, this));
-
-
-    }
-
-
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
+        mAdapter = new AlarmAdapter(mAlarms);
+        mAlarmListRecyclerView.setAdapter(mAdapter);
     }
 
 
