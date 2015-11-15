@@ -11,12 +11,12 @@ matrix:
   include:
     - env: EMULATOR_API_LEVEL=21 ANDROID_API_LEVEL=21
     - env: EMULATOR_API_LEVEL=21 ANDROID_API_LEVEL=23
-    - env: EMULATOR_API_LEVEL=23 ANDROID_API_LEVEL=21
-    - env: EMULATOR_API_LEVEL=23 ANDROID_API_LEVEL=23
+#    - env: EMULATOR_API_LEVEL=23 ANDROID_API_LEVEL=21
+#    - env: EMULATOR_API_LEVEL=23 ANDROID_API_LEVEL=23
 
 
   allow_failures:
-    - env: EMULATOR_API_LEVEL=23 ANDROID_API_LEVEL=23
+#    - env: EMULATOR_API_LEVEL=23 ANDROID_API_LEVEL=23
     - env: EMULATOR_API_LEVEL=21 ANDROID_API_LEVEL=23
 
 android:
@@ -67,8 +67,8 @@ before_script:
 - "./gradlew build installDebug --stacktrace --continue -PdisablePreDex"
 
 script:
-- adb pm grant de.jbossi.geolarm android.permission.ACCESS_FINE_LOCATION
-- adb pm grant de.jbossi.geolarm android.permission.ACCESS_COARSE_LOCATION
+- adb shell pm grant de.jbossi.geolarm android.permission.ACCESS_FINE_LOCATION
+- adb shell pm grant de.jbossi.geolarm android.permission.ACCESS_COARSE_LOCATION
 - "./gradlew connectedCheck --stacktrace --continue -PdisablePreDex"
 
 
