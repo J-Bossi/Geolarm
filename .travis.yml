@@ -38,6 +38,7 @@ matrix:
 before_install:
 - chmod +x gradlew
 - android list target
+- chmod +x execute
 - ./execute install-and-update-sdk
 - ./execute create-and-start-device wait-for-device-online
 
