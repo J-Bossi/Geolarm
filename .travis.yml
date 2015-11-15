@@ -4,25 +4,50 @@ sudo: false
 env:
   global:
   - ADB_INSTALL_TIMEOUT=30
+  - ANDROID_BUILD_TOOLS_VERSION=23.0.2
+  - ANDROID_ABI=google_apis/armeabi-v7a
+  - ANDROID_API_LEVEL=23
+
+matrix:
+  include:
+    - env: EMULATOR_API_LEVEL=21
+    - env: EMULATOR_API_LEVEL=23
+
+  allow_failures:
+    - env: EMULATOR_API_LEVEL=23
+
+
+
 android:
   components:
-  - build-tools-22.0.1
-  - android-21
+  - platform-tools
+  - tools
+  - build-tools-$ANDROID_BUILD_TOOLS_VERSION
+  - android-$ANDROID_API_LEVEL
+  - android-$EMULATOR_API_LEVEL
+# For Google APIs
+  - addon-google_apis-google-$ANDROID_API_LEVEL
+  - addon-google_apis-google-$EMULATOR_API_LEVEL
+# Google Play Services
   - extra-google-google_play_services
+# Support library
+  - extra-android-support
+# Latest artifacts in local repository
   - extra-google-m2repository
   - extra-android-m2repository
-  - addon-google_apis-google-21
-  - sys-img-armeabi-v7a-addon-google_apis-google-21
+# Specify at least one system image
+  - sys-img-armeabi-v7a-addon-google_apis-google-$ANDROID_API_LEVEL
+  - sys-img-armeabi-v7a-addon-google_apis-google-$EMULATOR_API_LEVEL
+
 
 before_install:
 - chmod +x gradlew
 - android list target
-- echo no | android create avd --force -n test -t "Google Inc.:Google APIs:21"
-  --abi google_apis/armeabi-v7a
+
+- echo no | android create avd --force -n test -t "Google Inc.:Google APIs:"$EMULATOR_API_LEVEL --abi $ANDROID_ABI
 - emulator -avd test -no-skin -no-audio -no-window &
-- chmod +x wait_for_emulator.sh
-#- ./wait_for_emulator.sh
 - android-wait-for-emulator
+
 - sleep 30
 - adb logcat &
 - adb shell settings put secure location_providers_allowed gps,network &
