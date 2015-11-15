@@ -12,11 +12,11 @@ matrix:
   include:
     - env: EMULATOR_API_LEVEL=21
     - env: EMULATOR_API_LEVEL=23
+    - env: ANDROID_API_LEVEL=23
+    - env: ANDROID_API_LEVEL=21
 
   allow_failures:
     - env: EMULATOR_API_LEVEL=23
-
-
 
 android:
   components:
@@ -47,6 +47,8 @@ before_install:
 - echo no | android create avd --force -n test -t "Google Inc.:Google APIs:"$EMULATOR_API_LEVEL --abi $ANDROID_ABI
 - emulator -avd test -no-skin -no-audio -no-window &
 - android-wait-for-emulator
+- chmod +x wait_for_emulator.sh
+- ./wait_for_emulator.sh
 
 - sleep 30
 - adb logcat &
