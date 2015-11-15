@@ -17,6 +17,7 @@ matrix:
 
   allow_failures:
     - env: EMULATOR_API_LEVEL=23
+    - env: ANDROID_API_LEVEL=23
 
 android:
   components:
