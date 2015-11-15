@@ -11,13 +11,13 @@ android:
   - extra-google-google_play_services
   - extra-google-m2repository
   - extra-android-m2repository
-  - addon-google_apis-google-23
+  - addon-google_apis-google-22
   - sys-img-armeabi-v7a-addon-google_apis-google-23
 
 before_install:
 - chmod +x gradlew
 - android list target
-- echo no | android create avd --force -n test -t "Google Inc.:Google APIs:23"
+- echo no | android create avd --force -n test -t "Google Inc.:Google APIs:22"
   --abi google_apis/armeabi-v7a
 - emulator -avd test -no-skin -no-audio -no-window &
 - chmod +x wait_for_emulator.sh
