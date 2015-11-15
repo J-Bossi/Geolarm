@@ -1,7 +1,9 @@
 package de.jbossi.geolarm;
 
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -55,6 +57,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         activityUnderTest = getActivity();
         ensureGoogleApiClientConnection();
         ensureInstalledDependencies();
+        ensurePermissionsAreSet();
         ensureNetworkIsAvailable();
         getInstrumentation().runOnMainSync(new Runnable() {
             public void run() {
@@ -65,6 +68,13 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
         assertTrue(solo.waitForActivity(MapsActivity.class));
         Thread.sleep(10000);
+    }
+
+    private void ensurePermissionsAreSet() {
+        PackageManager pm = activityUnderTest.getPackageManager();
+
+        assertEquals(PackageManager.PERMISSION_GRANTED, pm.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION, activityUnderTest.getPackageName()));
+        assertEquals(PackageManager.PERMISSION_GRANTED, pm.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, activityUnderTest.getPackageName()));
     }
 
     private void ensureGoogleApiClientConnection() {

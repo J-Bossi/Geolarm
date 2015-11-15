@@ -1,11 +1,14 @@
 package de.jbossi.geolarm.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -46,6 +49,12 @@ import de.jbossi.geolarm.services.GeofenceTransitionsIntentService;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+    private static final String[] LOCATION_PERMS = {
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+    };
+
+    // private static final int REQUEST_PERMS = 1328;
     protected static final String TAG = "main-activity";
     public GoogleApiClient mGoogleApiClient;
     int REQUEST_PLACE_PICKER = 1;
@@ -66,6 +75,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+
+        ActivityCompat.requestPermissions(this,
+                LOCATION_PERMS, 1);
+
 
         mMap = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
@@ -101,7 +115,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mGoogleApiClient.connect();
 
         try {
-            Log.i(TAG, "LocationMode qwertz "+ Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.LOCATION_MODE));
+            Log.i(TAG, "LocationMode " + Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.LOCATION_MODE));
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
         }
@@ -167,6 +181,30 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         map.setOnMapLongClickListener(onMapLongClickListener);
         map.getUiSettings().setMapToolbarEnabled(false);
+    }
+
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+
+
+                } else {
+
+                    // permission denied, boo! Disable the
+
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
     public void showSetAlarmDialog() {

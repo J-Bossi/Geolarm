@@ -63,8 +63,15 @@ before_install:
 - sleep 10
 - adb shell input keyevent 23 &
 
+before_script:
+- "./gradlew build install --stacktrace --continue -PdisablePreDex"
+
 script:
-- "./gradlew build connectedCheck --stacktrace --continue -PdisablePreDex"
+- adb pm grant de.jbossi.geolarm android.permission.ACCESS_FINE_LOCATION
+- adb pm grant de.jbossi.geolarm android.permission.ACCESS_COARSE_LOCATION
+- "./gradlew connectedCheck --stacktrace --continue -PdisablePreDex"
+
+
 
 after_script:
 
