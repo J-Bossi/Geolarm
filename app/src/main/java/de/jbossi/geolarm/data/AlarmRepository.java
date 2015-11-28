@@ -33,10 +33,8 @@ public class AlarmRepository {
                 .getDefaultSharedPreferences(context);
 
         mapper.addMixIn(LatLng.class, LatLngMixIn.class);
-        mAlarms = GetObjectsFromFile();
-
+        mAlarms = getObjectsFromFile();
     }
-
 
     public static AlarmRepository getInstance(Context ctx) {
         if (mInstance == null) {
@@ -46,19 +44,15 @@ public class AlarmRepository {
     }
 
 
-    public List<Alarm> GetObjectsFromFile() {
+    public List<Alarm> getObjectsFromFile() {
 
-        String JSONObject = pref.getString("Alarms", new String());
+        String JSONObject = pref.getString("Alarms","");
         if (!JSONObject.isEmpty()) {
             Log.i("GET-JSON", JSONObject);
             try {
                 mAlarms = mapper.readValue(JSONObject, new TypeReference<List<Alarm>>() {
                 });
-
-
-            } catch (JsonMappingException e) {
-                e.printStackTrace();
-            } catch (JsonParseException e) {
+            } catch (JsonParseException | JsonMappingException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -68,7 +62,6 @@ public class AlarmRepository {
         return mAlarms;
 
     }
-
 
     public void SaveObjectsToFile(List<Alarm> alarms) {
 
@@ -82,7 +75,7 @@ public class AlarmRepository {
             e.printStackTrace();
         }
         editor.putString("Alarms", writer.toString());
-        editor.commit();
+        editor.apply();
     }
 
     public List<Alarm> getmAlarms() {
@@ -92,8 +85,6 @@ public class AlarmRepository {
     public void addAlarm(Alarm alarm) {
         mAlarms.add(alarm);
         SaveObjectsToFile(mAlarms);
-
-
     }
 
     public void removeAlarm(Alarm alarm) {

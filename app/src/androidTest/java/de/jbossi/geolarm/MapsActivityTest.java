@@ -28,7 +28,6 @@ import de.jbossi.geolarm.activities.MapsActivity;
 import de.jbossi.geolarm.models.Alarm;
 
 
-
 public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActivity> {
     public static final int AWAIT_TIMEOUT_IN_MILLISECONDS = 2000;
     public static final String TAG = MapsActivityTest.class.getSimpleName();
@@ -93,25 +92,10 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         assertEquals(result, ConnectionResult.SUCCESS);
     }
 
-
-/*    public void testMockLocation()  throws InterruptedException{
-        Thread.sleep(1000);
-        pushLocation(10.0, 10.0, 1.0f);
-        Thread.sleep(5000);
-        pushLocation(10.0, 10.0, 0.5f);
-        Thread.sleep(5000);
-        Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(activityUnderTest.mGoogleApiClient);
-        Log.i(TAG,lastLocation.toString());
-
-        assertEquals("Location Wrong", 10.0,lastLocation.getLatitude());
-        assertEquals("Location Wrong", 10.0,lastLocation.getLongitude());
-    }
-        */
-
     //positive
     public void testEndInFence() throws InterruptedException {
         activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
-        for (int i = 0; i < 30; i++){
+        for (int i = 0; i < 30; i++) {
             Log.i(TAG, String.format("Iterating over the location ... (%1$d)", i));
 
             pushLocation(52.45400 + (i * 0.0001f), 13.52300 + (i * 0.0001f), 1.0f);
@@ -253,7 +237,6 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
     public void testFastSpeed() throws InterruptedException {
         activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
 
-
         for (int i = 0; i < 30; i++) {
             Log.i(TAG, String.format("Iterating over the location ... (%1$d)", i));
 
@@ -267,8 +250,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         assertTrue(solo.waitForActivity(AlarmReceiver.class));
     }
 
-
-    public void pushLocation(final double lat,final double lon, final float acc) {
+    public void pushLocation(final double lat, final double lon, final float acc) {
 
         final CountDownLatch lock = new CountDownLatch(1);
 

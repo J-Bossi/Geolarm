@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -54,7 +53,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
 
-    // private static final int REQUEST_PERMS = 1328;
     protected static final String TAG = "main-activity";
     public GoogleApiClient mGoogleApiClient;
     int REQUEST_PLACE_PICKER = 1;
@@ -76,7 +74,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-
         ActivityCompat.requestPermissions(this,
                 LOCATION_PERMS, 1);
 
@@ -92,7 +89,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        // Kick off the request to build GoogleApiClient.
         buildGoogleApiClient();
 
     }
@@ -104,7 +100,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
-
                 .addApi(LocationServices.API)
                 .build();
     }
@@ -136,19 +131,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if (mLastLocation != null) {
-
         }
     }
 
-    @Override
     public void onConnectionSuspended(int i) {
         Log.i(TAG, "on conncetionsuspended callback???");
     }
 
-    @Override
     protected void onResume() {
         super.onResume();
-
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -158,11 +149,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_list:
-
                 Intent startListIntent = new Intent(this, AlarmList.class);
                 startActivityForResult(startListIntent, 0);
                 return true;
@@ -172,8 +161,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void onMapReady(GoogleMap map) {
-
-
         Log.i(TAG, "Startin onMapReady");
         map.setMyLocationEnabled(true);
         if (mLastLocation != null) {
@@ -183,33 +170,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         map.getUiSettings().setMapToolbarEnabled(false);
     }
 
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 1: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-
-
-                } else {
-
-                    // permission denied, boo! Disable the
-
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
-        }
-    }
-
     public void showSetAlarmDialog() {
-
-
         final Dialog setUpDialog = new Dialog(this);
         setUpDialog.title("Alarm wählen!")
                 .contentView(R.layout.set_alarm_dialog)
@@ -232,7 +193,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 setUpDialog.cancel();
             }
         });
-
 
         editLocation = (TextView) setUpDialog.findViewById(R.id.setAlarmDialog_Location);
         if (place != null) {
@@ -264,8 +224,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void startPlacePicker(LatLng latLng) {
-
-
         try {
             PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
             intentBuilder.setLatLngBounds(Util.computeBounds(latLng));
@@ -281,17 +239,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Toast.LENGTH_LONG)
                     .show();
         }
-
-
     }
 
 
     protected void onActivityResult(int requestCode,
                                     int resultCode, Intent data) {
-
         if (requestCode == REQUEST_PLACE_PICKER
                 && resultCode == Activity.RESULT_OK) {
-
 
             place = PlacePicker.getPlace(data, this);
             showSetAlarmDialog();
@@ -300,15 +254,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-
     private Geofence buildGeofence(Alarm alarm) {
-
-
         return new Geofence.Builder()
-                // Set the request ID of the geofence. This is a string to identify this
-                // geofence.
                 .setRequestId(alarm.getId())
-
                 .setCircularRegion(
                         alarm.getPosition().latitude,
                         alarm.getPosition().longitude,
@@ -317,8 +265,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
                 .build();
-
-
     }
 
     private GeofencingRequest getGeofencingRequest(Geofence geofence) {
@@ -337,7 +283,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 FLAG_UPDATE_CURRENT);
     }
 
-
     @Override
     public void onResult(Status status) {
         Log.i(TAG, "Geofence Intent Result came back " + status.getStatusCode());
@@ -354,10 +299,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
         Log.i(TAG, "GooglePlayServices Connection Failed: Status: " +connectionResult.getErrorCode());
         if (connectionResult.hasResolution() && !mGoogleApiClient.isConnecting()) {
             mGoogleApiClient.connect();

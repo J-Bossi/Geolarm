@@ -8,12 +8,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class LatLngMixIn {
-
-
     LatLngMixIn(@JsonProperty("latitude") double latitude, @JsonProperty("longitude") double longitude) {
-
     }
-
-
-    //   @JsonProperty("longitude") abstract double getLongitude();
 }

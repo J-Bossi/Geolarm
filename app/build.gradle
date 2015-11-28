@@ -21,13 +21,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
+            debuggable true
         }
     }
     productFlavors {
     }
-
 }
-
 
 project.ext.preDexLibs = !project.hasProperty('disablePreDex')
 
@@ -41,7 +40,6 @@ subprojects {
     }
 }
 
-
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.google.android.gms:play-services-maps:8.3.0'
@@ -49,7 +47,6 @@ dependencies {
 
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'
-
 
     compile 'com.fasterxml.jackson.core:jackson-core:2.5.3'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.3'

@@ -22,9 +22,7 @@ public class AlarmList extends Activity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-
     private List<Alarm> mAlarms;
-
 
     public AlarmList() {
         super();
