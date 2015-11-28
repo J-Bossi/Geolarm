@@ -54,11 +54,10 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
     public void onBindViewHolder(AlarmAdapter.ViewHolder holder, int position) {
         Alarm alarm = mAlarmList.get(position);
         holder.itemName.setText(alarm.getName());
-        holder.itemDistance.setText(Float.toString(alarm.getDistance()));
-        holder.itemPlace.setText(alarm.getPosition().toString());
+        holder.itemDistance.setText(String.format("Distance: %.0f", alarm.getDistance()));
+        holder.itemPlace.setText(String.format("lat=%.3f long=%.3f", alarm.getPosition().latitude, alarm.getPosition().longitude));
         holder.itemArmedSwitch.setChecked(alarm.isArmed());
     }
-
 
     public int getItemCount() {
         return mAlarmList.size();

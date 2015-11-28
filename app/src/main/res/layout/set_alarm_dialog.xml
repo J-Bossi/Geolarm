@@ -20,7 +20,7 @@
         app:sl_minValue="10"
         app:sl_stepValue="10"
         app:sl_maxValue="1000"
-        app:sl_value="50" />
+        app:sl_value="100" />
 
     <TextView
         android:id="@+id/setAlarmDialog_Location"

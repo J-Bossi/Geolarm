@@ -165,10 +165,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .contentView(R.layout.set_alarm_dialog)
                 .positiveAction(R.string.ok).negativeAction(R.string.cancel).show();
 
-        Slider slider = (Slider) setUpDialog.findViewById(R.id.setAlarmDialog_Distance);
-
-        mDistance = slider.getPosition();
-
+        final Slider slider = (Slider) setUpDialog.findViewById(R.id.setAlarmDialog_Distance);
+        slider.setOnPositionChangeListener(new Slider.OnPositionChangeListener() {
+            @Override
+            public void onPositionChanged(Slider view, boolean fromUser, float oldPos, float newPos, int oldValue, int newValue) {
+                mDistance = slider.getExactValue();
+            }
+        });
 
         setUpDialog.positiveActionClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -250,7 +253,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         alarm.getDistance()//Distance in meters
                 )
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL)
+                .setLoiteringDelay(10)
                 .build();
     }
 
