@@ -1,20 +1,17 @@
 package de.jbossi.geolarm.activities;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,23 +43,23 @@ import de.jbossi.geolarm.models.Alarm;
 import de.jbossi.geolarm.services.GeofenceTransitionsIntentService;
 
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-
-    private static final String[] LOCATION_PERMS = {
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-    };
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     protected static final String TAG = "main-activity";
-    public GoogleApiClient mGoogleApiClient;
+
+
     int REQUEST_PLACE_PICKER = 1;
     private MapFragment mMap; // Might be null if Google Play services APK is not available.
     private ImageButton mFloatingActionButton;
     private TextView editLocation;
     private Place place;
     private float mDistance;
-    private Location mLastLocation;
+
+    protected GoogleApiClient mGoogleApiClient;
+    protected Location mLastLocation;
+
     private boolean mSuccess = false;
+
     private GoogleMap.OnMapLongClickListener onMapLongClickListener = new GoogleMap.OnMapLongClickListener() {
         public void onMapLongClick(LatLng latLng) {
             startPlacePicker(latLng);
@@ -70,17 +67,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     };
 
     protected void onCreate(Bundle savedInstanceState) {
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        ActivityCompat.requestPermissions(this,
-                LOCATION_PERMS, 1);
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
 
-
-        mMap = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
-        mMap.getMapAsync(this);
         mFloatingActionButton = (ImageButton) findViewById(R.id.floatingActionButton);
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,58 +83,52 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 showSetAlarmDialog();
             }
         });
-
-        buildGoogleApiClient();
-
-    }
-
-    /**
-     * Builds a GoogleApiClient. Uses the {@code #addApi} method to request the LocationServices API.
-     */
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
+        mMap = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.map);
 
-        try {
-            Log.i(TAG, "LocationMode " + Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.LOCATION_MODE));
-        } catch (Settings.SettingNotFoundException e) {
-            e.printStackTrace();
-        }
     }
+
 
     @Override
     protected void onStop() {
         super.onStop();
-        //mGoogleApiClient.disconnect();
-    }
-
-    /**
-     * Runs when a GoogleApiClient object successfully connects.
-     */
-
-    public void onConnected(Bundle connectionHint) {
-
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-        if (mLastLocation != null) {
-        }
-    }
-
-    public void onConnectionSuspended(int i) {
-        Log.i(TAG, "on conncetionsuspended callback???");
+        mGoogleApiClient.disconnect();
     }
 
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+            mMap.getMapAsync(this);
+        }
+        else {
+            //TODO No Location -> No Map
+        }
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.i(TAG, "GooglePlayServices Connection Failed: Status: " + connectionResult.getErrorCode());
+        if (connectionResult.hasResolution() && !mGoogleApiClient.isConnecting()) {
+            mGoogleApiClient.connect();
+            Log.i(TAG, "Trying again to connect");
+        }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -153,7 +142,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         switch (item.getItemId()) {
             case R.id.action_list:
                 Intent startListIntent = new Intent(this, AlarmList.class);
-                startActivityForResult(startListIntent, 0);
+                startActivity(startListIntent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -206,7 +195,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Geofence geofence = buildGeofence(alarm);
 
         LocationServices.GeofencingApi.addGeofences(
-
                 mGoogleApiClient,
                 getGeofencingRequest(geofence),
                 getGeofencePendingIntent()
@@ -240,7 +228,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .show();
         }
     }
-
 
     protected void onActivityResult(int requestCode,
                                     int resultCode, Intent data) {
@@ -296,15 +283,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mSuccess = true;
         } else {
             mSuccess = false;
-        }
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.i(TAG, "GooglePlayServices Connection Failed: Status: " +connectionResult.getErrorCode());
-        if (connectionResult.hasResolution() && !mGoogleApiClient.isConnecting()) {
-            mGoogleApiClient.connect();
-            Log.i(TAG, "Trying again to connect qwertz ");
         }
     }
 }
