@@ -39,22 +39,22 @@ public class AlarmList extends Activity {
         mAlarms = AlarmRepository.getInstance(this).getmAlarms();
         mAdapter = new AlarmAdapter(mAlarms);
 
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-
-
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder viewHolder1) {
                 return false;
             }
 
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                //Remove swiped item from list and notify the RecyclerView
+            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                final int position = viewHolder.getAdapterPosition();
+                AlarmRepository.getInstance(AlarmList.this).removeAlarm(mAlarms.get(position));
+                mAlarmListRecyclerView.getAdapter().notifyItemRemoved(position);
+
             }
         };
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(mAlarmListRecyclerView);
-
 
         mAlarmListRecyclerView.setAdapter(mAdapter);
     }

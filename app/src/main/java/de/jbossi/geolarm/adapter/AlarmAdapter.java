@@ -51,6 +51,13 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
     }
 
 
+    public void removeItem(int position) {
+        mAlarmList.remove(position);
+        notifyItemRemoved(position);
+    }
+
+
+
     public void onBindViewHolder(AlarmAdapter.ViewHolder holder, int position) {
         Alarm alarm = mAlarmList.get(position);
         holder.itemName.setText(alarm.getName());

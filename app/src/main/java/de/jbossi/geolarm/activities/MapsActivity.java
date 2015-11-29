@@ -55,7 +55,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Place place;
     private float mDistance;
 
-    protected GoogleApiClient mGoogleApiClient;
+    public GoogleApiClient mGoogleApiClient;
     protected Location mLastLocation;
 
     private boolean mSuccess = false;
