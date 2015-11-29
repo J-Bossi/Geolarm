@@ -150,7 +150,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void onMapReady(GoogleMap map) {
-        Log.i(TAG, "Startin onMapReady");
+        Log.i(TAG, "Google Map is ready");
         map.setMyLocationEnabled(true);
         if (mLastLocation != null) {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 13));
@@ -172,6 +172,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mDistance = slider.getExactValue();
             }
         });
+        mDistance = slider.getExactValue();
 
         setUpDialog.positiveActionClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -195,13 +196,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void addAlarm(Alarm alarm) {
         AlarmRepository.getInstance(getApplicationContext()).addAlarm(alarm);
-        Geofence geofence = buildGeofence(alarm);
+        if (alarm.isArmed()) {
+            Geofence geofence = buildGeofence(alarm);
 
-        LocationServices.GeofencingApi.addGeofences(
-                mGoogleApiClient,
-                getGeofencingRequest(geofence),
-                getGeofencePendingIntent()
-        ).setResultCallback(this);
+            LocationServices.GeofencingApi.addGeofences(
+                    mGoogleApiClient,
+                    getGeofencingRequest(geofence),
+                    getGeofencePendingIntent()
+            ).setResultCallback(this);
+        }
     }
 
     public void removeAlarm(String alarmId) {
@@ -253,7 +256,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         alarm.getDistance()//Distance in meters
                 )
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
                 .setLoiteringDelay(10)
                 .build();
     }
