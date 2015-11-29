@@ -96,12 +96,18 @@ public class AlarmRepository {
         for (Alarm alarm : mAlarms) {
             if (alarm.getId() == alarmId) {
                 mAlarms.remove(alarm);
+                SaveObjectsToFile(mAlarms);
             }
         }
     }
 
     public void removeAlarms() {
         mAlarms.clear();
+        SaveObjectsToFile(mAlarms);
+    }
+
+    public void save() {
+        SaveObjectsToFile(mAlarms);
     }
 
 

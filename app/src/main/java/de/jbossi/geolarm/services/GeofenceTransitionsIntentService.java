@@ -57,17 +57,12 @@ public class GeofenceTransitionsIntentService extends IntentService {
             return;
         }
 
-        // Get the transition type.
-        int geofenceTransition = geofencingEvent.getGeofenceTransition();
-
         // Test that the reported transition was of interest.
-        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER || geofenceTransition == Geofence.GEOFENCE_TRANSITION_DWELL) {
-
+        if (geofencingEvent.getGeofenceTransition() == Geofence.GEOFENCE_TRANSITION_ENTER) {
             // Get the geofences that were triggered. A single event can trigger multiple geofences.
             //    List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
 
             sendAlarm();
-
 
         } else {
             // Log the error.
