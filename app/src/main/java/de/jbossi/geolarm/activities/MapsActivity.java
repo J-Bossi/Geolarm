@@ -47,7 +47,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     protected static final String TAG = "main-activity";
 
-
     int REQUEST_PLACE_PICKER = 1;
     private MapFragment mMap; // Might be null if Google Play services APK is not available.
     private ImageButton mFloatingActionButton;
@@ -91,7 +90,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mGoogleApiClient.connect();
         mMap = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
-
     }
 
 
@@ -114,7 +112,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         else {
             //TODO No Location -> No Map
         }
-
     }
 
     @Override
@@ -246,7 +243,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
-
     private Geofence buildGeofence(Alarm alarm) {
         return new Geofence.Builder()
                 .setRequestId(alarm.getId())
@@ -277,6 +273,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 FLAG_UPDATE_CURRENT);
     }
 
+
     @Override
     public void onResult(Status status) {
         Log.i(TAG, "Geofence Intent Result came back " + status.getStatusCode());
@@ -289,7 +286,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (status.getStatusCode() == 0) {
             mSuccess = true;
         } else {
+
             mSuccess = false;
         }
     }
+
+
 }

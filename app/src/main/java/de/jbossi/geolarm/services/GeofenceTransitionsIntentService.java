@@ -5,12 +5,14 @@ import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
 import java.util.Calendar;
+import java.util.List;
 
 import de.jbossi.geolarm.GeofenceErrorMessages;
 import de.jbossi.geolarm.activities.AlarmReceiver;
@@ -26,6 +28,7 @@ import de.jbossi.geolarm.activities.AlarmReceiver;
 public class GeofenceTransitionsIntentService extends IntentService {
 
     protected static final String TAG = "geofence-service";
+    public static final String GEOFENCE_ENTERED = "GEOFENCE_ENTERED";
 
     /**
      * This constructor is required, and calls the super IntentService(String)
@@ -60,8 +63,12 @@ public class GeofenceTransitionsIntentService extends IntentService {
         // Test that the reported transition was of interest.
         if (geofencingEvent.getGeofenceTransition() == Geofence.GEOFENCE_TRANSITION_ENTER) {
             // Get the geofences that were triggered. A single event can trigger multiple geofences.
-            //    List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
-
+            List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
+            for (Geofence geofence : triggeringGeofences) {
+                Intent geofenceTriggeredIntent = new Intent(GEOFENCE_ENTERED);
+                geofenceTriggeredIntent.putExtra("REQUEST_ID", geofence.getRequestId());
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            }
             sendAlarm();
 
         } else {

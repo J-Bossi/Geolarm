@@ -1,8 +1,13 @@
 package de.jbossi.geolarm.data;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -19,12 +24,14 @@ import java.util.List;
 import de.jbossi.geolarm.models.Alarm;
 
 
-public class AlarmRepository {
+public class AlarmRepository extends BroadcastReceiver {
     private static AlarmRepository mInstance = null;
     private List<Alarm> mAlarms;
     private ObjectMapper mapper = new ObjectMapper();
     private Context context;
     private SharedPreferences pref;
+
+    public static final String ALARM_REPOSITORY_CHANGED = "ALARM_REPOSITORY_CHANGED";
 
     public AlarmRepository(Context ctx) {
         context = ctx;
@@ -34,6 +41,14 @@ public class AlarmRepository {
 
         mapper.addMixIn(LatLng.class, LatLngMixIn.class);
         mAlarms = getObjectsFromFile();
+
+
+        registerBroadcastSender();
+    }
+
+    public void registerBroadcastSender() {
+        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(context);
+        broadcastManager.registerReceiver(this, new IntentFilter(ALARM_REPOSITORY_CHANGED));
     }
 
     public static AlarmRepository getInstance(Context ctx) {
@@ -43,10 +58,9 @@ public class AlarmRepository {
         return mInstance;
     }
 
-
     public List<Alarm> getObjectsFromFile() {
 
-        String JSONObject = pref.getString("Alarms","");
+        String JSONObject = pref.getString("Alarms", "");
         if (!JSONObject.isEmpty()) {
             Log.i("GET-JSON", JSONObject);
             try {
@@ -109,6 +123,24 @@ public class AlarmRepository {
     public void save() {
         SaveObjectsToFile(mAlarms);
     }
+
+    public void onReceive(Context context, Intent intent) {
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            disarmAlarm(extras.getString("REQUEST_ID"));
+        }
+    }
+
+    private void disarmAlarm(String id) {
+        for (Alarm alarm : mAlarms) {
+            if (alarm.getId().equals(id)) {
+                alarm.setArmed(false);
+            }
+        }
+    }
+
+
+
 
 
 }
