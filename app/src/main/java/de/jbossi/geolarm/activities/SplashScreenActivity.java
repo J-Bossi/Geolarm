@@ -14,7 +14,7 @@ import com.google.android.gms.location.LocationServices;
 
 import de.jbossi.geolarm.R;
 
-public class SplashScreenActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+public class SplashScreenActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final int PERMISSION_REQUEST = 1;
 

@@ -43,20 +43,17 @@ import de.jbossi.geolarm.models.Alarm;
 import de.jbossi.geolarm.services.GeofenceTransitionsIntentService;
 
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    protected static final String TAG = "main-activity";
-
+    protected static final String TAG = "ACTIVITY MapsActivity";
+    public GoogleApiClient mGoogleApiClient;
+    protected Location mLastLocation;
     int REQUEST_PLACE_PICKER = 1;
     private MapFragment mMap; // Might be null if Google Play services APK is not available.
     private ImageButton mFloatingActionButton;
     private TextView editLocation;
     private Place place;
     private float mDistance;
-
-    public GoogleApiClient mGoogleApiClient;
-    protected Location mLastLocation;
-
     private boolean mSuccess = false;
 
     private GoogleMap.OnMapLongClickListener onMapLongClickListener = new GoogleMap.OnMapLongClickListener() {
@@ -108,8 +105,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
             mMap.getMapAsync(this);
-        }
-        else {
+        } else {
             //TODO No Location -> No Map
         }
     }
@@ -243,6 +239,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
+
     private Geofence buildGeofence(Alarm alarm) {
         return new Geofence.Builder()
                 .setRequestId(alarm.getId())
@@ -278,7 +275,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onResult(Status status) {
         Log.i(TAG, "Geofence Intent Result came back " + status.getStatusCode());
         try {
-            Log.i(TAG, "Settings Location Mode Code: "+ Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.LOCATION_MODE));
+            Log.i(TAG, "Settings Location Mode Code: " + Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.LOCATION_MODE));
         } catch (Settings.SettingNotFoundException e) {
             Log.i(TAG, "SettingNotFoundException");
             e.printStackTrace();

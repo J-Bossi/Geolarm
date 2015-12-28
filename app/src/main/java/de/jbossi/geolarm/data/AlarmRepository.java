@@ -1,13 +1,8 @@
 package de.jbossi.geolarm.data;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -24,7 +19,7 @@ import java.util.List;
 import de.jbossi.geolarm.models.Alarm;
 
 
-public class AlarmRepository extends BroadcastReceiver {
+public class AlarmRepository {
     private static AlarmRepository mInstance = null;
     private List<Alarm> mAlarms;
     private ObjectMapper mapper = new ObjectMapper();
@@ -41,14 +36,6 @@ public class AlarmRepository extends BroadcastReceiver {
 
         mapper.addMixIn(LatLng.class, LatLngMixIn.class);
         mAlarms = getObjectsFromFile();
-
-
-        registerBroadcastSender();
-    }
-
-    public void registerBroadcastSender() {
-        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(context);
-        broadcastManager.registerReceiver(this, new IntentFilter(ALARM_REPOSITORY_CHANGED));
     }
 
     public static AlarmRepository getInstance(Context ctx) {
@@ -58,7 +45,7 @@ public class AlarmRepository extends BroadcastReceiver {
         return mInstance;
     }
 
-    public List<Alarm> getObjectsFromFile() {
+    private List<Alarm> getObjectsFromFile() {
 
         String JSONObject = pref.getString("Alarms", "");
         if (!JSONObject.isEmpty()) {
@@ -77,7 +64,7 @@ public class AlarmRepository extends BroadcastReceiver {
 
     }
 
-    public void SaveObjectsToFile(List<Alarm> alarms) {
+    private void saveObjectsToFile(List<Alarm> alarms) {
 
         SharedPreferences.Editor editor = pref.edit();
 
@@ -98,46 +85,51 @@ public class AlarmRepository extends BroadcastReceiver {
 
     public void addAlarm(Alarm alarm) {
         mAlarms.add(alarm);
-        SaveObjectsToFile(mAlarms);
+        saveObjectsToFile(mAlarms);
     }
 
     public void removeAlarm(Alarm alarm) {
         mAlarms.remove(alarm);
-        SaveObjectsToFile(mAlarms);
+        saveObjectsToFile(mAlarms);
     }
 
     public void removeAlarm(String alarmId) {
         for (Alarm alarm : mAlarms) {
             if (alarm.getId() == alarmId) {
                 mAlarms.remove(alarm);
-                SaveObjectsToFile(mAlarms);
+                saveObjectsToFile(mAlarms);
             }
         }
     }
 
     public void removeAlarms() {
         mAlarms.clear();
-        SaveObjectsToFile(mAlarms);
+        saveObjectsToFile(mAlarms);
     }
 
     public void save() {
-        SaveObjectsToFile(mAlarms);
+        saveObjectsToFile(mAlarms);
     }
 
-    public void onReceive(Context context, Intent intent) {
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            disarmAlarm(extras.getString("REQUEST_ID"));
-        }
-    }
-
-    private void disarmAlarm(String id) {
+    public void disarmAlarm(String id) {
         for (Alarm alarm : mAlarms) {
             if (alarm.getId().equals(id)) {
                 alarm.setArmed(false);
             }
         }
     }
+
+    public int getPositionFromID(String requestId) {
+        int i = 0;
+        for (Alarm alarm : mAlarms) {
+            if (alarm.getId().equals(requestId)) {
+                return i;
+            }
+            i++;
+        }
+        return -1;
+    }
+
 
 
 
