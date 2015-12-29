@@ -1,13 +1,10 @@
 package de.jbossi.geolarm.helper;
 
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -27,8 +24,8 @@ import de.jbossi.geolarm.services.GeofenceTransitionsIntentService;
 public class GeofenceHandler extends Observable implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
 
-    protected static final String TAG = "repository-service";
-    private static final String GEOFENCE_ENTERED = "GEOFENCE_ENTERED";
+    protected static final String TAG = "geofence-handler";
+
 
     public enum State {
         CONNECTED,
@@ -37,7 +34,6 @@ public class GeofenceHandler extends Observable implements GoogleApiClient.Conne
     }
 
     private GoogleApiClient mGoogleApiClient;
-    private BroadcastReceiver mAlarmChangeReceiver;
     private Context mContext;
     private State mState;
 
@@ -53,41 +49,32 @@ public class GeofenceHandler extends Observable implements GoogleApiClient.Conne
         mGoogleApiClient.connect();
 
         mState = State.CONNECTING;
-
-        mAlarmChangeReceiver = new BroadcastReceiver() {
-            public void onReceive(Context context, Intent intent) {
-                String requestId = intent.getExtras().getString("REQUEST_ID");
-                removeGeofence(requestId);
-//                mAlarmRepository.disarmAlarm(requestId);
-//
-                Log.i(TAG, "Geofence Entered. Trying to disarm geofence with ID: " + requestId);
-            }
-        };
-
-        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(context);
-        broadcastManager.registerReceiver(mAlarmChangeReceiver, new IntentFilter(GEOFENCE_ENTERED));
     }
 
     @Override
     public void onConnected(Bundle bundle) {
         mState = State.CONNECTED;
+        setChanged();
         notifyObservers(mState);
     }
 
     @Override
     public void onConnectionSuspended(int i) {
         mState = State.DISCONNECTED;
+        setChanged();
         notifyObservers(mState);
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         mState = State.DISCONNECTED;
+        setChanged();
         notifyObservers(mState);
         Log.i(TAG, "GooglePlayServices Connection Failed: Status: " + connectionResult.getErrorCode());
         if (connectionResult.hasResolution() && !mGoogleApiClient.isConnecting()) {
             mGoogleApiClient.connect();
             mState = State.CONNECTING;
+            setChanged();
             notifyObservers(mState);
             Log.i(TAG, "Trying again to connect");
         }
