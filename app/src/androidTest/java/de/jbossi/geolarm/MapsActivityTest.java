@@ -23,7 +23,7 @@ import com.robotium.solo.Solo;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import de.jbossi.geolarm.activities.AlarmReceiver;
+import de.jbossi.geolarm.activities.AlarmReceiverActivity;
 import de.jbossi.geolarm.activities.MapsActivity;
 import de.jbossi.geolarm.models.Alarm;
 
@@ -101,12 +101,12 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
             pushLocation(52.45400 + (i * 0.0001f), 13.52300 + (i * 0.0001f), 1.0f);
             Thread.sleep(750);
 
-            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+            if (solo.getCurrentActivity().getClass() == AlarmReceiverActivity.class) {
                 break;
             }
         }
 
-        assertTrue(solo.waitForActivity(AlarmReceiver.class));
+        assertTrue(solo.waitForActivity(AlarmReceiverActivity.class));
     }
 
     //positive
@@ -118,12 +118,12 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
             pushLocation(52.45700 + (i * 0.0001f), 13.52600 + (i * 0.0001f), 1.0f);
             Thread.sleep(750);
 
-            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+            if (solo.getCurrentActivity().getClass() == AlarmReceiverActivity.class) {
                 break;
             }
         }
 
-        assertTrue(solo.waitForActivity(AlarmReceiver.class));
+        assertTrue(solo.waitForActivity(AlarmReceiverActivity.class));
     }
 
     //positive
@@ -134,52 +134,52 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         while (true) {
             pushLocation(52.45750, 13.52400, 1.0f);
             Thread.sleep(750);
-            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+            if (solo.getCurrentActivity().getClass() == AlarmReceiverActivity.class) {
                 break;
             }
             pushLocation(52.45750, 13.52450, 1.0f);
             Thread.sleep(750);
-            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+            if (solo.getCurrentActivity().getClass() == AlarmReceiverActivity.class) {
                 break;
             }
             pushLocation(52.45750, 13.52500, 1.0f);
             Thread.sleep(750);
-            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+            if (solo.getCurrentActivity().getClass() == AlarmReceiverActivity.class) {
                 break;
             }
             pushLocation(52.45750, 13.52550, 1.0f);
             Thread.sleep(750);
-            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+            if (solo.getCurrentActivity().getClass() == AlarmReceiverActivity.class) {
                 break;
             }
             pushLocation(52.45750, 13.52600, 1.0f);
             Thread.sleep(750);
-            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+            if (solo.getCurrentActivity().getClass() == AlarmReceiverActivity.class) {
                 break;
             }
             pushLocation(52.45750, 13.52650, 1.0f);
             Thread.sleep(750);
-            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+            if (solo.getCurrentActivity().getClass() == AlarmReceiverActivity.class) {
                 break;
             }
             pushLocation(52.45750, 13.52700, 1.0f);
             Thread.sleep(750);
-            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+            if (solo.getCurrentActivity().getClass() == AlarmReceiverActivity.class) {
                 break;
             }
             pushLocation(52.45750, 13.52750, 1.0f);
             Thread.sleep(750);
-            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+            if (solo.getCurrentActivity().getClass() == AlarmReceiverActivity.class) {
                 break;
             }
             pushLocation(52.45750, 13.52800, 1.0f);
             Thread.sleep(750);
-            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+            if (solo.getCurrentActivity().getClass() == AlarmReceiverActivity.class) {
                 break;
             }
         }
 
-        assertTrue(solo.waitForActivity(AlarmReceiver.class));
+        assertTrue(solo.waitForActivity(AlarmReceiverActivity.class));
 
 
     }
@@ -200,7 +200,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         Thread.sleep(750);
         pushLocation(52.45750, 13.52800, 1.0f);
         Thread.sleep(750);
-        if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+        if (solo.getCurrentActivity().getClass() == AlarmReceiverActivity.class) {
             fail();
         }
 
@@ -227,7 +227,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         Thread.sleep(750);
         pushLocation(52.45750, 13.52800, 100.0f);
         Thread.sleep(750);
-        if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+        if (solo.getCurrentActivity().getClass() == AlarmReceiverActivity.class) {
             fail();
         }
 
@@ -243,11 +243,11 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
             pushLocation(52.45400 + (i * 0.0002f), 13.52300 + (i * 0.0002f), 1.0f);
             Thread.sleep(10);
 
-            if (solo.getCurrentActivity().getClass() == AlarmReceiver.class) {
+            if (solo.getCurrentActivity().getClass() == AlarmReceiverActivity.class) {
                 break;
             }
         }
-        assertTrue(solo.waitForActivity(AlarmReceiver.class));
+        assertTrue(solo.waitForActivity(AlarmReceiverActivity.class));
     }
 
     public void pushLocation(final double lat, final double lon, final float acc) {

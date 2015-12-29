@@ -40,13 +40,13 @@ import de.jbossi.geolarm.models.Alarm;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    protected static final String TAG = "ACTIVITY MapsActivity";
-    public GoogleApiClient mGoogleApiClient;
-    protected Location mLastLocation;
-    int REQUEST_PLACE_PICKER = 1;
+    protected static final String TAG = "MapsActivity";
+    private int REQUEST_PLACE_PICKER = 1;
+
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
     private MapFragment mMap; // Might be null if Google Play services APK is not available.
-    private ImageButton mFloatingActionButton;
-    private Place place;
+    private Place mPlace;
     private float mDistance;
 
     private GeofenceHandler mGeofenceHandler;
@@ -69,7 +69,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mGeofenceHandler = new GeofenceHandler(this);
 
-        mFloatingActionButton = (ImageButton) findViewById(R.id.floatingActionButton);
+        ImageButton mFloatingActionButton = (ImageButton) findViewById(R.id.floatingActionButton);
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,7 +131,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_list:
-                Intent startListIntent = new Intent(this, AlarmList.class);
+                Intent startListIntent = new Intent(this, AlarmListActivity.class);
                 startActivity(startListIntent);
                 return true;
             default:
@@ -166,7 +166,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         setUpDialog.positiveActionClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                addAlarm(new Alarm(place.getName(), place.getLatLng(), place.getId(), mDistance, true));
+                addAlarm(new Alarm(mPlace.getName(), mPlace.getLatLng(), mPlace.getId(), mDistance, true));
                 setUpDialog.cancel();
             }
         });
@@ -178,8 +178,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         TextView editLocation = (TextView) setUpDialog.findViewById(R.id.setAlarmDialog_Location);
-        if (place != null) {
-            editLocation.setText(place.getName());
+        if (mPlace != null) {
+            editLocation.setText(mPlace.getName());
         }
         setUpDialog.show();
     }
@@ -221,7 +221,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (requestCode == REQUEST_PLACE_PICKER
                 && resultCode == Activity.RESULT_OK) {
 
-            place = PlacePicker.getPlace(data, this);
+            mPlace = PlacePicker.getPlace(data, this);
             showSetAlarmDialog();
         } else {
             super.onActivityResult(requestCode, resultCode, data);

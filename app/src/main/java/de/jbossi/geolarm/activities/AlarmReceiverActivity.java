@@ -14,8 +14,9 @@ import java.io.IOException;
 
 import de.jbossi.geolarm.R;
 
-public class AlarmReceiver extends FragmentActivity {
+public class AlarmReceiverActivity extends FragmentActivity {
 
+    protected static final String TAG = "AlarmReceiverActivity";
 
     private MediaPlayer mMediaPlayer;
     private Button mShutdownAlarmButton;

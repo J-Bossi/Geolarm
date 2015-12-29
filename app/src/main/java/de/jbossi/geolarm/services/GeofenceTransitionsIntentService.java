@@ -15,7 +15,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import de.jbossi.geolarm.GeofenceErrorMessages;
-import de.jbossi.geolarm.activities.AlarmReceiver;
+import de.jbossi.geolarm.activities.AlarmReceiverActivity;
 
 
 /**
@@ -80,7 +80,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
     private void sendAlarm() {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.SECOND, 1);
-        Intent intent = new Intent(this, AlarmReceiver.class);
+        Intent intent = new Intent(this, AlarmReceiverActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
                 12345, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager am = (AlarmManager) getApplicationContext().getSystemService(Activity.ALARM_SERVICE);

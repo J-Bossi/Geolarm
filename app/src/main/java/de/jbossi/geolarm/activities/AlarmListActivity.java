@@ -21,9 +21,9 @@ import de.jbossi.geolarm.helper.GeofenceHandler;
 /**
  * Created by Johannes on 19.06.2015.
  */
-public class AlarmList extends Activity {
+public class AlarmListActivity extends Activity {
 
-    protected static final String TAG = "ACTIVITY AlarmList";
+    protected static final String TAG = "AlarmListActivity";
     public static final String GEOFENCE_ENTERED = "GEOFENCE_ENTERED";
 
     private RecyclerView mAlarmListRecyclerView;
@@ -36,7 +36,7 @@ public class AlarmList extends Activity {
 
     private BroadcastReceiver mAlarmChangeReceiver;
 
-    public AlarmList() {
+    public AlarmListActivity() {
         super();
     }
 

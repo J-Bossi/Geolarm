@@ -16,23 +16,25 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.jbossi.geolarm.helper.GeofenceHandler;
 import de.jbossi.geolarm.models.Alarm;
 
 
 public class AlarmRepository {
+
     private static AlarmRepository mInstance = null;
     private List<Alarm> mAlarms;
     private ObjectMapper mapper = new ObjectMapper();
-    private Context context;
-    private SharedPreferences pref;
-
-    public static final String ALARM_REPOSITORY_CHANGED = "ALARM_REPOSITORY_CHANGED";
+    private Context mContext;
+    private SharedPreferences mSharedPreferences;
+    private GeofenceHandler mGeofenceHandler;
 
     public AlarmRepository(Context ctx) {
-        context = ctx;
+        mContext = ctx;
+        mGeofenceHandler = new GeofenceHandler(mContext);
         mAlarms = new ArrayList<>();
-        pref = PreferenceManager
-                .getDefaultSharedPreferences(context);
+        mSharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(mContext);
 
         mapper.addMixIn(LatLng.class, LatLngMixIn.class);
         mAlarms = getObjectsFromFile();
@@ -47,7 +49,7 @@ public class AlarmRepository {
 
     private List<Alarm> getObjectsFromFile() {
 
-        String JSONObject = pref.getString("Alarms", "");
+        String JSONObject = mSharedPreferences.getString("Alarms", "");
         if (!JSONObject.isEmpty()) {
             Log.i("GET-JSON", JSONObject);
             try {
@@ -66,7 +68,7 @@ public class AlarmRepository {
 
     private void saveObjectsToFile(List<Alarm> alarms) {
 
-        SharedPreferences.Editor editor = pref.edit();
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
 
         StringWriter writer = new StringWriter();
 

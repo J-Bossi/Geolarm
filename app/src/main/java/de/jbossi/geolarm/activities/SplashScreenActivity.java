@@ -18,7 +18,7 @@ public class SplashScreenActivity extends AppCompatActivity implements GoogleApi
 
     private static final int PERMISSION_REQUEST = 1;
 
-    private static final String TAG = "splash_screen";
+    private static final String TAG = "SplashScreenActivity";
 
     private static final String[] LOCATION_PERMS = {
             Manifest.permission.ACCESS_FINE_LOCATION,
