@@ -69,7 +69,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
                 geofenceTriggeredIntent.putExtra("REQUEST_ID", geofence.getRequestId());
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(geofenceTriggeredIntent);
             }
-            // sendAlarm();
+            sendAlarm();
 
         } else {
             // Log the error.

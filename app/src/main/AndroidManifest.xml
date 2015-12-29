@@ -50,7 +50,6 @@
         <service
             android:name=".services.GeofenceTransitionsIntentService"
             android:exported="true" />
-
     </application>
 
 </manifest>

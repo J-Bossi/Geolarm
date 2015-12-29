@@ -1,11 +1,9 @@
 package de.jbossi.geolarm.activities;
 
 import android.app.Activity;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -21,10 +19,7 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
@@ -39,11 +34,11 @@ import com.rey.material.widget.Slider;
 import de.jbossi.geolarm.R;
 import de.jbossi.geolarm.Util;
 import de.jbossi.geolarm.data.AlarmRepository;
+import de.jbossi.geolarm.helper.GeofenceHandler;
 import de.jbossi.geolarm.models.Alarm;
-import de.jbossi.geolarm.services.GeofenceTransitionsIntentService;
 
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     protected static final String TAG = "ACTIVITY MapsActivity";
     public GoogleApiClient mGoogleApiClient;
@@ -51,10 +46,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     int REQUEST_PLACE_PICKER = 1;
     private MapFragment mMap; // Might be null if Google Play services APK is not available.
     private ImageButton mFloatingActionButton;
-    private TextView editLocation;
     private Place place;
     private float mDistance;
-    private boolean mSuccess = false;
+
+    private GeofenceHandler mGeofenceHandler;
 
     private GoogleMap.OnMapLongClickListener onMapLongClickListener = new GoogleMap.OnMapLongClickListener() {
         public void onMapLongClick(LatLng latLng) {
@@ -71,6 +66,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+
+        mGeofenceHandler = new GeofenceHandler(this);
 
         mFloatingActionButton = (ImageButton) findViewById(R.id.floatingActionButton);
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -180,7 +177,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        editLocation = (TextView) setUpDialog.findViewById(R.id.setAlarmDialog_Location);
+        TextView editLocation = (TextView) setUpDialog.findViewById(R.id.setAlarmDialog_Location);
         if (place != null) {
             editLocation.setText(place.getName());
         }
@@ -192,22 +189,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (alarm.isArmed()) {
             Geofence geofence = buildGeofence(alarm);
 
-            LocationServices.GeofencingApi.addGeofences(
-                    mGoogleApiClient,
-                    getGeofencingRequest(geofence),
-                    getGeofencePendingIntent()
-            ).setResultCallback(this);
+            mGeofenceHandler.addGeofence(geofence);
         }
     }
 
     public void removeAlarm(String alarmId) {
         //Todo: Remove Geofences
         AlarmRepository.getInstance(getApplicationContext()).removeAlarm(alarmId);
-    }
-
-    public void removeAllAlarms() {
-        AlarmRepository.getInstance(getApplicationContext()).removeAlarms();
-        LocationServices.GeofencingApi.removeGeofences(mGoogleApiClient, getGeofencePendingIntent());
     }
 
     public void startPlacePicker(LatLng latLng) {
@@ -253,40 +241,4 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .setLoiteringDelay(10)
                 .build();
     }
-
-    private GeofencingRequest getGeofencingRequest(Geofence geofence) {
-        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-        builder.addGeofence(geofence);
-        return builder.build();
-    }
-
-    private PendingIntent getGeofencePendingIntent() {
-        // Reuse the PendingIntent if we already have it.
-        Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
-        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
-        // calling addGeofences() and removeGeofences().
-        return PendingIntent.getService(this, 0, intent, PendingIntent.
-                FLAG_UPDATE_CURRENT);
-    }
-
-
-    @Override
-    public void onResult(Status status) {
-        Log.i(TAG, "Geofence Intent Result came back " + status.getStatusCode());
-        try {
-            Log.i(TAG, "Settings Location Mode Code: " + Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.LOCATION_MODE));
-        } catch (Settings.SettingNotFoundException e) {
-            Log.i(TAG, "SettingNotFoundException");
-            e.printStackTrace();
-        }
-        if (status.getStatusCode() == 0) {
-            mSuccess = true;
-        } else {
-
-            mSuccess = false;
-        }
-    }
-
-
 }
