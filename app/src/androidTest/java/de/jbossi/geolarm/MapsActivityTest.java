@@ -1,3 +1,4 @@
+/*
 package de.jbossi.geolarm;
 
 
@@ -74,6 +75,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
     //positive
     public void testEndInFence() throws InterruptedException {
+*/
 /*        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
         for (int i = 0; i < 30; i++) {
             Log.i(TAG, String.format("Iterating over the location ... (%1$d)", i));
@@ -86,11 +88,13 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
             }
         }
 
-        assertTrue(solo.waitForActivity(AlarmReceiverActivity.class));*/
+        assertTrue(solo.waitForActivity(AlarmReceiverActivity.class));*//*
+
     }
 
     //positive
     public void testStartInFence() throws InterruptedException {
+*/
 /*        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
         for (int i = 0; i < 30; i++) {
             Log.i(TAG, String.format("Iterating over the location ... (%1$d)", i));
@@ -103,13 +107,15 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
             }
         }
 
-        assertTrue(solo.waitForActivity(AlarmReceiverActivity.class));*/
+        assertTrue(solo.waitForActivity(AlarmReceiverActivity.class));*//*
+
     }
 
     //positive
     public void testEnteringBeeline() throws InterruptedException {
 
- /*       activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
+ */
+/*       activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
         //100m n , 13.526000
         while (true) {
             pushLocation(52.45750, 13.52400, 1.0f);
@@ -161,12 +167,14 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
         assertTrue(solo.waitForActivity(AlarmReceiverActivity.class));
 
-*/
+*//*
+
     }
 
 
     //negative
     public void testMissingBeeline() throws InterruptedException {
+*/
 /*        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
         pushLocation(52.45750, 13.52400, 1.0f);
         Thread.sleep(750);
@@ -182,12 +190,14 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         Thread.sleep(750);
         if (solo.getCurrentActivity().getClass() == AlarmReceiverActivity.class) {
             fail();
-        }*/
+        }*//*
+
 
     }
 
     //negative
     public void testUncertainLocations() throws InterruptedException {
+*/
 /*
         activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
         pushLocation(52.45750, 13.52400, 100.0f);
@@ -211,12 +221,14 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
         if (solo.getCurrentActivity().getClass() == AlarmReceiverActivity.class) {
             fail();
         }
-*/
+*//*
+
 
     }
 
     //positive
     public void testFastSpeed() throws InterruptedException {
+*/
 /*        activityUnderTest.addAlarm(new Alarm("Test", new LatLng(52.45700, 13.52600), "1", 100, true));
 
         for (int i = 0; i < 30; i++) {
@@ -229,12 +241,14 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
                 break;
             }
         }
-        assertTrue(solo.waitForActivity(AlarmReceiverActivity.class));*/
+        assertTrue(solo.waitForActivity(AlarmReceiverActivity.class));*//*
+
     }
 
     public void pushLocation(final double lat, final double lon, final float acc) {
 
-    /*    final CountDownLatch lock = new CountDownLatch(1);
+    */
+/*    final CountDownLatch lock = new CountDownLatch(1);
 
         LocationServices.FusedLocationApi.setMockMode(activityUnderTest.mGoogleApiClient, true).setResultCallback(new ResultCallback<Status>() {
             @Override
@@ -275,8 +289,9 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
             lock.await(AWAIT_TIMEOUT_IN_MILLISECONDS, TimeUnit.MILLISECONDS);
         } catch (InterruptedException exception) {
             Log.i(TAG, "Waiting thread awakened prematurely", exception);
-        }*/
+        }*//*
+
     }
 
 
-}
+}*/

@@ -11,6 +11,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import de.jbossi.geolarm.R;
 import de.jbossi.geolarm.data.AlarmRepository;
@@ -19,15 +21,26 @@ import de.jbossi.geolarm.models.Alarm;
 /**
  * Created by Johannes on 19.06.2015.
  */
-public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> {
+public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> implements Observer {
+
+    protected static final String TAG = "alarmadapter";
+
     private List<Alarm> mAlarmList;
-    private Context context;
+    private AlarmRepository mAlarmRepository;
 
-
-    public AlarmAdapter(List<Alarm> alarms) {
+    public AlarmAdapter(List<Alarm> alarms, Context context) {
         super();
         this.mAlarmList = alarms;
+        mAlarmRepository = AlarmRepository.getInstance(context);
+        mAlarmRepository.addObserver(this);
+    }
 
+    @Override
+    public void update(Observable observable, Object data) {
+        if (observable != mAlarmRepository) {
+            return;
+        }
+        notifyItemChanged((int) data);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -36,7 +49,6 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
         public TextView itemPlace;
         public Switch itemArmedSwitch;
         public SwitchListener switchListener;
-
 
         public ViewHolder(View view, SwitchListener switchListener) {
             super(view);
@@ -51,7 +63,6 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
 
     public AlarmAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.listitem_alarm, parent, false);
-        context = parent.getContext();
         return new ViewHolder(view, new SwitchListener());
     }
 
@@ -62,7 +73,6 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
         holder.itemPlace.setText(String.format("lat=%.3f long=%.3f", alarm.getPosition().latitude, alarm.getPosition().longitude));
         holder.switchListener.updatePosition(position);
         holder.itemArmedSwitch.setChecked(alarm.isArmed());
-        ;
     }
 
     public int getItemCount() {
@@ -79,11 +89,13 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             mAlarmList.get(position).setArmed(isChecked);
-            AlarmRepository.getInstance(context).save();
+            if (isChecked) {
+                mAlarmRepository.rearmAlarm(mAlarmList.get(position).getId());
+            } else {
+                mAlarmRepository.disarmAlarm(mAlarmList.get(position).getId());
+            }
         }
     }
-
-
 
 
 }

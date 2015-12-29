@@ -1,8 +1,12 @@
 package de.jbossi.geolarm.data;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -24,7 +28,11 @@ import de.jbossi.geolarm.helper.GeofenceHandler;
 import de.jbossi.geolarm.models.Alarm;
 
 
-public class AlarmRepository implements Observer {
+public class AlarmRepository extends Observable implements Observer {
+
+    protected static final String TAG = "alarm-repository";
+
+    private static final String GEOFENCE_ENTERED = "GEOFENCE_ENTERED";
 
     private static AlarmRepository mInstance = null;
     private List<Alarm> mAlarms;
@@ -45,6 +53,19 @@ public class AlarmRepository implements Observer {
 
         mapper.addMixIn(LatLng.class, LatLngMixIn.class);
         mAlarms = getObjectsFromFile();
+
+        BroadcastReceiver mAlarmChangeReceiver = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                String requestId = intent.getExtras().getString("REQUEST_ID");
+                disarmAlarm(requestId);
+                setChanged();
+                notifyObservers(getPositionFromID(requestId));
+                Log.i(TAG, "Geofence Entered. Trying to disarm geofence with ID: " + requestId);
+            }
+        };
+
+        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(mContext);
+        broadcastManager.registerReceiver(mAlarmChangeReceiver, new IntentFilter(GEOFENCE_ENTERED));
     }
 
     public static AlarmRepository getInstance(Context ctx) {
@@ -145,6 +166,19 @@ public class AlarmRepository implements Observer {
                     mGeofenceHandler.removeGeofence(alarm.getId());
                 } else {
                     mPendingGeofencesToRemove.push(buildGeofence(alarm));
+                }
+            }
+        }
+    }
+
+    public void rearmAlarm(String id) {
+        for (Alarm alarm : mAlarms) {
+            if (alarm.getId().equals(id)) {
+                alarm.setArmed(true);
+                if (mGeofenceHandler.getState() == GeofenceHandler.State.CONNECTED) {
+                    mGeofenceHandler.addGeofence(buildGeofence(alarm));
+                } else {
+                    mPendingGeofencesToAdd.push(buildGeofence(alarm));
                 }
             }
         }
