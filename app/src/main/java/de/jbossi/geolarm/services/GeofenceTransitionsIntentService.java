@@ -16,6 +16,7 @@ import java.util.List;
 
 import de.jbossi.geolarm.GeofenceErrorMessages;
 import de.jbossi.geolarm.activities.AlarmReceiverActivity;
+import de.jbossi.geolarm.data.AlarmRepository;
 
 
 /**
@@ -70,6 +71,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(geofenceTriggeredIntent);
             }
             sendAlarm();
+            disarmAlarm(triggeringGeofences.get(0).getRequestId());
 
         } else {
             // Log the error.
@@ -85,6 +87,10 @@ public class GeofenceTransitionsIntentService extends IntentService {
                 12345, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager am = (AlarmManager) getApplicationContext().getSystemService(Activity.ALARM_SERVICE);
         am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+    }
+
+    private void disarmAlarm(String geofenceId) {
+        AlarmRepository.getInstance(this).disarmAlarm(geofenceId);
     }
 
 

@@ -98,6 +98,7 @@ public class AlarmListActivity extends Activity {
 
     @Override
     protected void onStop() {
+        mAlarmRepository.save();
         super.onStop();
     }
 }

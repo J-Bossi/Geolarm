@@ -20,18 +20,26 @@ import com.google.android.gms.location.LocationServices;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 import de.jbossi.geolarm.services.GeofenceTransitionsIntentService;
 
-public class GeofenceHandler implements GoogleApiClient.ConnectionCallbacks,
+public class GeofenceHandler extends Observable implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
 
     protected static final String TAG = "repository-service";
     private static final String GEOFENCE_ENTERED = "GEOFENCE_ENTERED";
 
+    public enum State {
+        CONNECTED,
+        CONNECTING,
+        DISCONNECTED
+    }
+
     private GoogleApiClient mGoogleApiClient;
     private BroadcastReceiver mAlarmChangeReceiver;
     private Context mContext;
+    private State mState;
 
     public GeofenceHandler(Context context) {
 
@@ -43,6 +51,8 @@ public class GeofenceHandler implements GoogleApiClient.ConnectionCallbacks,
                 .addApi(LocationServices.API)
                 .build();
         mGoogleApiClient.connect();
+
+        mState = State.CONNECTING;
 
         mAlarmChangeReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
@@ -60,19 +70,25 @@ public class GeofenceHandler implements GoogleApiClient.ConnectionCallbacks,
 
     @Override
     public void onConnected(Bundle bundle) {
-
+        mState = State.CONNECTED;
+        notifyObservers(mState);
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        mState = State.DISCONNECTED;
+        notifyObservers(mState);
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
+        mState = State.DISCONNECTED;
+        notifyObservers(mState);
         Log.i(TAG, "GooglePlayServices Connection Failed: Status: " + connectionResult.getErrorCode());
         if (connectionResult.hasResolution() && !mGoogleApiClient.isConnecting()) {
             mGoogleApiClient.connect();
+            mState = State.CONNECTING;
+            notifyObservers(mState);
             Log.i(TAG, "Trying again to connect");
         }
     }
@@ -127,5 +143,9 @@ public class GeofenceHandler implements GoogleApiClient.ConnectionCallbacks,
             Log.i(TAG, "SettingNotFoundException");
             e.printStackTrace();
         }
+    }
+
+    public State getState() {
+        return mState;
     }
 }

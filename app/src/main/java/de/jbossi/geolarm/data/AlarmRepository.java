@@ -9,18 +9,22 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.location.Geofence;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Stack;
 
 import de.jbossi.geolarm.helper.GeofenceHandler;
 import de.jbossi.geolarm.models.Alarm;
 
 
-public class AlarmRepository {
+public class AlarmRepository implements Observer {
 
     private static AlarmRepository mInstance = null;
     private List<Alarm> mAlarms;
@@ -28,10 +32,13 @@ public class AlarmRepository {
     private Context mContext;
     private SharedPreferences mSharedPreferences;
     private GeofenceHandler mGeofenceHandler;
+    private Stack<Geofence> mPendingGeofencesToAdd = new Stack<>();
+    private Stack<Geofence> mPendingGeofencesToRemove = new Stack<>();
 
     public AlarmRepository(Context ctx) {
         mContext = ctx;
         mGeofenceHandler = new GeofenceHandler(mContext);
+        mGeofenceHandler.addObserver(this);
         mAlarms = new ArrayList<>();
         mSharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(mContext);
@@ -87,11 +94,23 @@ public class AlarmRepository {
 
     public void addAlarm(Alarm alarm) {
         mAlarms.add(alarm);
+        if (alarm.isArmed()) {
+            if (mGeofenceHandler.getState() == GeofenceHandler.State.CONNECTED) {
+                mGeofenceHandler.addGeofence(buildGeofence(alarm));
+            } else {
+                mPendingGeofencesToAdd.push(buildGeofence(alarm));
+            }
+        }
         saveObjectsToFile(mAlarms);
     }
 
     public void removeAlarm(Alarm alarm) {
         mAlarms.remove(alarm);
+        if (mGeofenceHandler.getState() == GeofenceHandler.State.CONNECTED) {
+            mGeofenceHandler.removeGeofence(alarm.getId());
+        } else {
+            mPendingGeofencesToRemove.push(buildGeofence(alarm));
+        }
         saveObjectsToFile(mAlarms);
     }
 
@@ -99,6 +118,11 @@ public class AlarmRepository {
         for (Alarm alarm : mAlarms) {
             if (alarm.getId() == alarmId) {
                 mAlarms.remove(alarm);
+                if (mGeofenceHandler.getState() == GeofenceHandler.State.CONNECTED) {
+                    mGeofenceHandler.removeGeofence(alarmId);
+                } else {
+                    mPendingGeofencesToRemove.push(buildGeofence(alarm));
+                }
                 saveObjectsToFile(mAlarms);
             }
         }
@@ -117,6 +141,11 @@ public class AlarmRepository {
         for (Alarm alarm : mAlarms) {
             if (alarm.getId().equals(id)) {
                 alarm.setArmed(false);
+                if (mGeofenceHandler.getState() == GeofenceHandler.State.CONNECTED) {
+                    mGeofenceHandler.removeGeofence(alarm.getId());
+                } else {
+                    mPendingGeofencesToRemove.push(buildGeofence(alarm));
+                }
             }
         }
     }
@@ -132,9 +161,41 @@ public class AlarmRepository {
         return -1;
     }
 
+    private Geofence buildGeofence(Alarm alarm) {
+        return new Geofence.Builder()
+                .setRequestId(alarm.getId())
+                .setCircularRegion(
+                        alarm.getPosition().latitude,
+                        alarm.getPosition().longitude,
+                        alarm.getDistance()//Distance in meters
+                )
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+                .setLoiteringDelay(10)
+                .build();
+    }
 
 
+    @Override
+    public void update(Observable observable, Object data) {
+        if (observable != mGeofenceHandler) {
+            return;
+        }
 
+        switch ((GeofenceHandler.State) data) {
+            case CONNECTED:
+                //Try to setup all Alarms which could not be setup in mean time
+                for (Geofence geofence : mPendingGeofencesToAdd) {
+                    mGeofenceHandler.addGeofence(geofence);
+                }
+                for (Geofence geofence : mPendingGeofencesToRemove) {
+                    mGeofenceHandler.removeGeofence(geofence.getRequestId());
+                }
+                break;
+            case CONNECTING:
 
-
+                break;
+            case DISCONNECTED:
+        }
+    }
 }

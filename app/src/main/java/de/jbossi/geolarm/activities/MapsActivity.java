@@ -19,7 +19,6 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
@@ -34,7 +33,6 @@ import com.rey.material.widget.Slider;
 import de.jbossi.geolarm.R;
 import de.jbossi.geolarm.Util;
 import de.jbossi.geolarm.data.AlarmRepository;
-import de.jbossi.geolarm.helper.GeofenceHandler;
 import de.jbossi.geolarm.models.Alarm;
 
 
@@ -48,8 +46,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MapFragment mMap; // Might be null if Google Play services APK is not available.
     private Place mPlace;
     private float mDistance;
-
-    private GeofenceHandler mGeofenceHandler;
 
     private GoogleMap.OnMapLongClickListener onMapLongClickListener = new GoogleMap.OnMapLongClickListener() {
         public void onMapLongClick(LatLng latLng) {
@@ -66,8 +62,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-
-        mGeofenceHandler = new GeofenceHandler(this);
 
         ImageButton mFloatingActionButton = (ImageButton) findViewById(R.id.floatingActionButton);
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -186,11 +180,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void addAlarm(Alarm alarm) {
         AlarmRepository.getInstance(getApplicationContext()).addAlarm(alarm);
-        if (alarm.isArmed()) {
-            Geofence geofence = buildGeofence(alarm);
-
-            mGeofenceHandler.addGeofence(geofence);
-        }
     }
 
     public void removeAlarm(String alarmId) {
@@ -228,17 +217,5 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private Geofence buildGeofence(Alarm alarm) {
-        return new Geofence.Builder()
-                .setRequestId(alarm.getId())
-                .setCircularRegion(
-                        alarm.getPosition().latitude,
-                        alarm.getPosition().longitude,
-                        alarm.getDistance()//Distance in meters
-                )
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
-                .setLoiteringDelay(10)
-                .build();
-    }
+
 }
