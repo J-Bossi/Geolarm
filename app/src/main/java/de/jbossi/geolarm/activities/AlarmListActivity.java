@@ -55,13 +55,9 @@ public class AlarmListActivity extends Activity {
 
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 final int position = viewHolder.getAdapterPosition();
-                //Removes Geofence
                 mGeofenceHandler.removeGeofence(mAlarmRepository.getmAlarms().get(position).getId());
-
-                //Deletes data
                 mAlarmRepository.getmAlarms().remove(position);
                 mAlarmListRecyclerView.getAdapter().notifyItemRemoved(position);
-
             }
         };
 
