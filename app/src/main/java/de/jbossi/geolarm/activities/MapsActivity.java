@@ -160,7 +160,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         setUpDialog.positiveActionClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                addAlarm(new Alarm(mPlace.getName(), mPlace.getLatLng(), mPlace.getId(), mDistance, true));
+                addAlarm(new Alarm(mPlace.getName().toString(), mPlace.getLatLng(), mPlace.getId(), mDistance, true));
                 setUpDialog.cancel();
             }
         });

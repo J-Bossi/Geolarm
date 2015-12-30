@@ -37,19 +37,17 @@ public class AlarmRepository extends Observable implements Observer {
     private static AlarmRepository mInstance = null;
     private List<Alarm> mAlarms;
     private ObjectMapper mapper = new ObjectMapper();
-    private Context mContext;
     private SharedPreferences mSharedPreferences;
     private GeofenceHandler mGeofenceHandler;
     private Stack<Geofence> mPendingGeofencesToAdd = new Stack<>();
     private Stack<Geofence> mPendingGeofencesToRemove = new Stack<>();
 
-    public AlarmRepository(Context ctx) {
-        mContext = ctx;
-        mGeofenceHandler = new GeofenceHandler(mContext);
+    public AlarmRepository(Context context) {
+        mGeofenceHandler = new GeofenceHandler(context);
         mGeofenceHandler.addObserver(this);
         mAlarms = new ArrayList<>();
         mSharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(mContext);
+                .getDefaultSharedPreferences(context);
 
         mapper.addMixIn(LatLng.class, LatLngMixIn.class);
         mAlarms = getObjectsFromFile();
@@ -64,7 +62,7 @@ public class AlarmRepository extends Observable implements Observer {
             }
         };
 
-        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(mContext);
+        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(context);
         broadcastManager.registerReceiver(mAlarmChangeReceiver, new IntentFilter(GEOFENCE_ENTERED));
     }
 
@@ -94,7 +92,7 @@ public class AlarmRepository extends Observable implements Observer {
 
     }
 
-    private void saveObjectsToFile(List<Alarm> alarms) {
+    private void saveObjectsToFile() {
 
         SharedPreferences.Editor editor = mSharedPreferences.edit();
 
@@ -116,57 +114,39 @@ public class AlarmRepository extends Observable implements Observer {
     public void addAlarm(Alarm alarm) {
         mAlarms.add(alarm);
         if (alarm.isArmed()) {
-            if (mGeofenceHandler.getState() == GeofenceHandler.State.CONNECTED) {
-                mGeofenceHandler.addGeofence(buildGeofence(alarm));
-            } else {
-                mPendingGeofencesToAdd.push(buildGeofence(alarm));
-            }
+            addGeofence(alarm);
         }
-        saveObjectsToFile(mAlarms);
+        saveObjectsToFile();
     }
 
-    public void removeAlarm(Alarm alarm) {
-        mAlarms.remove(alarm);
-        if (mGeofenceHandler.getState() == GeofenceHandler.State.CONNECTED) {
-            mGeofenceHandler.removeGeofence(alarm.getId());
-        } else {
-            mPendingGeofencesToRemove.push(buildGeofence(alarm));
-        }
-        saveObjectsToFile(mAlarms);
+    public void updateAlarm(Alarm alarm) {
+        removeGeofence(alarm);
+        mAlarms.get(getPositionFromID(alarm.getId())).setArmed(alarm.isArmed());
+        mAlarms.get(getPositionFromID(alarm.getId())).setDistance(alarm.getDistance());
+        mAlarms.get(getPositionFromID(alarm.getId())).setName(alarm.getName());
+        mAlarms.get(getPositionFromID(alarm.getId())).setPosition(alarm.getPosition());
+        addGeofence(alarm);
     }
 
     public void removeAlarm(String alarmId) {
         for (Alarm alarm : mAlarms) {
-            if (alarm.getId() == alarmId) {
+            if (alarm.getId().equals(alarmId)) {
                 mAlarms.remove(alarm);
-                if (mGeofenceHandler.getState() == GeofenceHandler.State.CONNECTED) {
-                    mGeofenceHandler.removeGeofence(alarmId);
-                } else {
-                    mPendingGeofencesToRemove.push(buildGeofence(alarm));
-                }
-                saveObjectsToFile(mAlarms);
+                removeGeofence(alarm);
+                saveObjectsToFile();
             }
         }
     }
 
-    public void removeAlarms() {
-        mAlarms.clear();
-        saveObjectsToFile(mAlarms);
-    }
-
     public void save() {
-        saveObjectsToFile(mAlarms);
+        saveObjectsToFile();
     }
 
     public void disarmAlarm(String id) {
         for (Alarm alarm : mAlarms) {
             if (alarm.getId().equals(id)) {
                 alarm.setArmed(false);
-                if (mGeofenceHandler.getState() == GeofenceHandler.State.CONNECTED) {
-                    mGeofenceHandler.removeGeofence(alarm.getId());
-                } else {
-                    mPendingGeofencesToRemove.push(buildGeofence(alarm));
-                }
+                removeGeofence(alarm);
             }
         }
     }
@@ -175,12 +155,24 @@ public class AlarmRepository extends Observable implements Observer {
         for (Alarm alarm : mAlarms) {
             if (alarm.getId().equals(id)) {
                 alarm.setArmed(true);
-                if (mGeofenceHandler.getState() == GeofenceHandler.State.CONNECTED) {
-                    mGeofenceHandler.addGeofence(buildGeofence(alarm));
-                } else {
-                    mPendingGeofencesToAdd.push(buildGeofence(alarm));
-                }
+                addGeofence(alarm);
             }
+        }
+    }
+
+    private void removeGeofence(Alarm alarm) {
+        if (mGeofenceHandler.getState() == GeofenceHandler.State.CONNECTED) {
+            mGeofenceHandler.removeGeofence(alarm.getId());
+        } else {
+            mPendingGeofencesToRemove.push(buildGeofence(alarm));
+        }
+    }
+
+    private void addGeofence(Alarm alarm) {
+        if (mGeofenceHandler.getState() == GeofenceHandler.State.CONNECTED) {
+            mGeofenceHandler.addGeofence(buildGeofence(alarm));
+        } else {
+            mPendingGeofencesToAdd.push(buildGeofence(alarm));
         }
     }
 

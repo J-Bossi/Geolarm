@@ -66,54 +66,32 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
         holder.switchListener.updatePosition(position);
         holder.itemArmedSwitch.setChecked(alarm.isArmed());
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-
-            float mDistance;
-
-            @Override
             public boolean onLongClick(View v) {
-                //final Alarm alarm = mAlarmRepository.getmAlarms().get(mAlarmListRecyclerView.getChildLayoutPosition(v));
-
                 final Dialog setUpDialog = new Dialog(context);
                 setUpDialog.title("Alarm wählen!")
                         .contentView(R.layout.set_alarm_dialog)
-                        .positiveAction(R.string.ok).negativeAction(R.string.cancel).show();
-
+                        .positiveAction(R.string.ok).show();
                 final Slider slider = (Slider) setUpDialog.findViewById(R.id.setAlarmDialog_Distance);
                 slider.setValue(alarm.getDistance(), true);
                 slider.setOnPositionChangeListener(new Slider.OnPositionChangeListener() {
                     @Override
                     public void onPositionChanged(Slider view, boolean fromUser, float oldPos, float newPos, int oldValue, int newValue) {
-                        mDistance = slider.getExactValue();
+                        alarm.setDistance(slider.getExactValue());
                     }
                 });
-                mDistance = slider.getExactValue();
+                alarm.setDistance(slider.getExactValue());
 
                 setUpDialog.positiveActionClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        mAlarmRepository.removeAlarm(alarm);
-                        mAlarmRepository.addAlarm(new Alarm(alarm.getName(), alarm.getPosition(), alarm.getId(), mDistance, alarm.isArmed()));
+                        mAlarmRepository.updateAlarm(alarm);
                         setUpDialog.dismiss();
                         notifyItemChanged(position);
                     }
                 });
 
-                setUpDialog.negativeActionClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        setUpDialog.cancel();
-                    }
-                });
-
                 TextView editLocation = (TextView) setUpDialog.findViewById(R.id.setAlarmDialog_Location);
-
                 editLocation.setText(alarm.getName());
-
                 setUpDialog.show();
-
-                //Open Edit Dialog
-
-                //Save edited Alarm
-
-                //Notify Item changed to DataLayer (This layer will handle geofences)
 
                 return true;
             }

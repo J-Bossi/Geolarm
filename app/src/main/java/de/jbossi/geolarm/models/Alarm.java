@@ -8,7 +8,7 @@ import com.google.android.gms.maps.model.LatLng;
  */
 public class Alarm {
 
-    private CharSequence name;
+    private String name;
     private boolean armed;
     @JsonProperty("position")
     private LatLng position;
@@ -18,7 +18,7 @@ public class Alarm {
     public Alarm() {
     }
 
-    public Alarm(CharSequence name, LatLng position, String id, float distance, boolean armed) {
+    public Alarm(String name, LatLng position, String id, float distance, boolean armed) {
 
         this.armed = armed;
         this.name = name;
@@ -27,7 +27,7 @@ public class Alarm {
         this.distance = distance;
     }
 
-    public CharSequence getName() {
+    public String getName() {
 
         return name;
     }
