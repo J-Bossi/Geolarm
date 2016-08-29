@@ -6,12 +6,12 @@ android {
         exclude 'META-INF/NOTICE'
     }
 
-    compileSdkVersion 23
+    compileSdkVersion 24
     buildToolsVersion "23.0.2"
     defaultConfig {
         applicationId "de.jbossi.geolarm"
         minSdkVersion 21
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 1
         versionName '0.1'
     }
@@ -42,11 +42,11 @@ subprojects {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.google.android.gms:play-services-maps:8.3.0'
-    compile 'com.google.android.gms:play-services-location:8.3.0'
+    compile 'com.google.android.gms:play-services-maps:9.2.1'
+    compile 'com.google.android.gms:play-services-location:9.2.1'
 
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:recyclerview-v7:23.1.1'
+    compile 'com.android.support:appcompat-v7:24.1.1'
+    compile 'com.android.support:recyclerview-v7:24.1.1'
 
     compile 'com.fasterxml.jackson.core:jackson-core:2.5.3'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.3'
