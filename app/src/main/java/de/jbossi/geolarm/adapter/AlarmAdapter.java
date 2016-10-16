@@ -1,7 +1,6 @@
 package de.jbossi.geolarm.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +19,8 @@ import java.util.Observer;
 import de.jbossi.geolarm.R;
 import de.jbossi.geolarm.data.AlarmRepository;
 import de.jbossi.geolarm.models.Alarm;
+
+import static de.jbossi.geolarm.R.styleable.RecyclerView;
 
 /**
  * Created by Johannes on 19.06.2015.
